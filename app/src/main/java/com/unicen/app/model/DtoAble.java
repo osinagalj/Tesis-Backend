@@ -4,7 +4,6 @@ import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 
-
 public interface DtoAble<DTO> {
 
     ModelMapper mm = new ModelMapper();
