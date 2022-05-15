@@ -32,8 +32,6 @@ import java.util.concurrent.ExecutionException;
 @Controller
 public class OAuthController {
 
-
-
     private final ApplicationPropertiesService properties;
     private final OAuthService oauthService;
     private final AuthenticationService authenticationService;

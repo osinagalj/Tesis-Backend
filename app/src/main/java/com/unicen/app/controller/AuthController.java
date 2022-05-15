@@ -10,7 +10,7 @@ import com.unicen.app.model.*;
 import com.unicen.app.services.AuthenticationService;
 import com.unicen.app.services.OAuthService;
 import com.unicen.app.services.UserService;
-import com.unicen.app.utils.util.JsonMap;
+import com.unicen.app.utils.JsonMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
