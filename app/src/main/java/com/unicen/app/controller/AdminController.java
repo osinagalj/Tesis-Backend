@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-//todo remove
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController extends GenericController<User, UserModelDTO> {

@@ -89,16 +89,9 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
         // TODO validate if the user email exists
         User user = userService.getByEmail(email);
 
-        // TODO confirm login method depending on the user
-
         String loginUrl = "/login";
         String label = "Password";
         String helper = "Enter your password";
-        //        String loginUrl = "/login-with-code";
-        //        String label = "Code";
-        //        String helper = "Enter the code sent to your email";
-        //        ValidationCode newCode = this.authenticationService.createLoginCode(email);
-        //        logger.debug(newCode.getCode());
 
         return ResponseEntity.ok(ApiResultDTO.ofSuccess(new JsonMap("loginUrl", loginUrl).addProp("label", label).addProp("helper", helper).asJson()));
     }

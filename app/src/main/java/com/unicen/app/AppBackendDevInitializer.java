@@ -29,8 +29,6 @@ public class AppBackendDevInitializer {
         String token = getAuthenticationService().loginUsingPassword(admin.getEmail(), "password").getToken();
         logger.info("session token: " + token);
 
-        //EntitiesDrawer.newAdminApiKey(admin);
-
     }
 
     public static AuthenticationService getAuthenticationService() {
