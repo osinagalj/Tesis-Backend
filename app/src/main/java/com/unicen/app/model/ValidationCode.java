@@ -1,5 +1,6 @@
 package com.unicen.app.model;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -61,15 +62,5 @@ public class ValidationCode extends GenericModel {
         return !getExpirationDate().after(new Date());
     }
 
-    /*
-    public void assertIsAvailable() {
-        if (unused()) {
-            throw new ObjectValidationFailed(this, "Code invalid or expired", "Validation code has been used already at " + getUsedAt());
-        }
 
-        if (unexpired()) {
-            throw new ObjectValidationFailed(this, "Code invalid or expired", "Code already expired at " + getExpirationDate());
-        }
-
-    }*/
 }
