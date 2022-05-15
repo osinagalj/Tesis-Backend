@@ -1,15 +1,11 @@
 package com.unicen.core.services;
 
 
-import com.unicen.core.configuration.ApplicationPropertiesService;
 import com.unicen.core.configuration.PasswordRulesConfiguration;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.exceptions.ObjectValidationFailed;
+import com.unicen.core.model.*;
 import com.unicen.core.repositories.AuthenticationTokenRepository;
-import com.unicen.core.model.ApiKey;
-import com.unicen.core.model.AuthEvent;
-import com.unicen.core.model.AuthenticationToken;
-import com.unicen.core.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.Nullable;
@@ -35,8 +31,8 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     private final PasswordRulesConfiguration passwordRulesConfiguration;
 
     public AuthenticationService(AuthenticationTokenRepository repository, UserService userService, ValidationCodeService validationCodeService,
-                                 ApiKeyService apiKeyService, ApplicationPropertiesService properties,
-                                 @Autowired(required = false) PasswordRulesConfiguration passwordRulesConfiguration) {
+                                 ApiKeyService apiKeyService,
+                                 ApplicationPropertiesService properties, @Autowired(required = false) PasswordRulesConfiguration passwordRulesConfiguration) {
         super(repository);
         this.userService = userService;
         this.validationCodeService = validationCodeService;
@@ -116,13 +112,15 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         validationCodeService.useCode(code, user, () -> userService.updatePassword(user, password));
     }
 
-    public User signUpWithPassword(String firstName, String lastName, String email, String password) {
+    public AuthenticationToken signUpWithPassword(String firstName, String lastName, String email, String password) {
         passwordRulesConfiguration.validatePassword(password);
 
         User freshUser = userService.registerWithPassword(firstName, lastName, email, password);
-        notifyAll(AuthEvent.SIGN_UP, freshUser);
+        userService.setEnabledStatus(email, true);
+        userService.addRole(email, "ROLE_ADMIN");
+        AuthenticationToken a = loginUsingPassword(email, (user) -> userService.match(password, user));
+        return a;
 
-        return freshUser;
     }
 
     public void forgotPassword(String email) {
@@ -194,10 +192,7 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     @Transactional
     public void updatePassword(String email, String plainPassword) {
         passwordRulesConfiguration.validatePassword(plainPassword);
-
         User user = userService.getByEmail(email);
-        String template = properties.getPasswordUpdateEmailTemplate();
-
         userService.updatePassword(user, plainPassword);
     }
 }

@@ -1,13 +1,11 @@
 package com.unicen.core.controller;
 
 
-import com.unicen.core.configuration.EnvironmentPropertiesService;
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.dto.AuthenticationTokenDTO;
 import com.unicen.core.dto.PublicAuthenticationToken;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.services.AuthenticationService;
-import com.unicen.core.services.OAuthService;
 import com.unicen.core.services.UserService;
 import com.unicen.core.utils.JsonMap;
 import com.unicen.core.model.*;
@@ -27,16 +25,11 @@ import java.util.Map;
 @PreAuthorize("permitAll()")
 public class AuthController extends GenericController<AuthenticationToken, AuthenticationTokenDTO> {
 
-    private final OAuthService oauthService;
-    private final EnvironmentPropertiesService properties;
     private AuthenticationService authenticationService;
     @Autowired private UserService userService;
 
-    public AuthController(AuthenticationService authenticationService, OAuthService oauthService,
-            @Qualifier("environmentPropertiesService") EnvironmentPropertiesService properties) {
+    public AuthController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
-        this.oauthService = oauthService;
-        this.properties = properties;
     }
 
     /**
@@ -62,7 +55,7 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
     public ResponseEntity<ApiResultDTO<String>> login(@RequestBody SignUpRequestDTO signUpRequestDTO) {
         authenticationService.signUpWithPassword(signUpRequestDTO.getFirstName(), signUpRequestDTO.getLastName(), signUpRequestDTO.getEmail(),
                 signUpRequestDTO.getPassword());
-        return ResponseEntity.ok(ApiResultDTO.ofSuccess(("A validation code has been sent to user email")));
+        return ResponseEntity.ok(ApiResultDTO.ofSuccess(new JsonMap("helper", "Your account has been created successfully").asJson()));
     }
 
     /**

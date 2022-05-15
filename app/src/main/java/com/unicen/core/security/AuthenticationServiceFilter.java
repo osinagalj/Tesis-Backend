@@ -22,7 +22,7 @@ public class AuthenticationServiceFilter extends CustomBearerTokenAuthentication
 
     private final List<String> BASIC_WHITELISTED_PATHS = List.of("/auth/login", "/auth/validate", "/auth/sign-up", "/auth/validate-forgot-password",
             "/auth/forgot-password", "/auth/validate-code", "/auth/login-with-code", "/auth/login-code", "/auth/login-method", "/status",
-            "/oauth/connect/google", "/oauth/callback/google", "/images/upload", "/admin/public/.*");
+            "/oauth/connect/google", "/oauth/callback/google", "/images/upload", "/admin/public/.*", "/send-email");
 
     public AuthenticationServiceFilter(AuthenticationService authenticationService, List<String> extraPaths) {
         this.authenticationService = authenticationService;

@@ -1,7 +1,6 @@
 package com.unicen.core.controller;
 
 
-import com.unicen.core.configuration.ApplicationPropertiesService;
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.dto.UserModelDTO;
 import com.unicen.core.exceptions.CoreApiException;
@@ -23,12 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminController extends GenericController<User, UserModelDTO> {
 
-    private final ApplicationPropertiesService propertiesService;
     private UserService userService;
 
-    public AdminController(UserService userService, ApplicationPropertiesService propertiesService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.propertiesService = propertiesService;
     }
 
     @PostMapping("/public/admins")
@@ -40,7 +37,6 @@ public class AdminController extends GenericController<User, UserModelDTO> {
     }
 
     private void validateSecret(String secret) {
-        checkAdminEndpointsEnabled();
         userService.validateOneTimeAdminSecret(secret);
     }
 
@@ -66,12 +62,6 @@ public class AdminController extends GenericController<User, UserModelDTO> {
         validateSecret(secret);
 
         return uniqueResult(userService.setEnabledStatus(dto.getEmail(), dto.isEnabled()));
-    }
-
-    private void checkAdminEndpointsEnabled() {
-        if (!this.propertiesService.adminEndpointsEnabled()) {
-            throw CoreApiException.insufficientPermissions();
-        }
     }
 
     @Override
