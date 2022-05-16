@@ -24,14 +24,17 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     private final ValidationCodeService validationCodeService;
     private final ApplicationPropertiesService properties;
 
+    private final EmailService emailService;
+
     private final PasswordRulesConfiguration passwordRulesConfiguration;
 
     public AuthenticationService(AuthenticationTokenRepository repository, UserService userService, ValidationCodeService validationCodeService,
-                                 ApplicationPropertiesService properties, @Autowired(required = false) PasswordRulesConfiguration passwordRulesConfiguration) {
+                                 ApplicationPropertiesService properties, EmailService emailService, @Autowired(required = false) PasswordRulesConfiguration passwordRulesConfiguration) {
         super(repository);
         this.userService = userService;
         this.validationCodeService = validationCodeService;
         this.properties = properties;
+        this.emailService = emailService;
         this.passwordRulesConfiguration = passwordRulesConfiguration != null ? passwordRulesConfiguration : new DefaultPasswordRulesConfiguration();
 
     }
@@ -98,11 +101,22 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     public AuthenticationToken signUpWithPassword(String firstName, String lastName, String email, String password) {
         passwordRulesConfiguration.validatePassword(password);
         User freshUser = userService.registerWithPassword(firstName, lastName, email, password);
-        userService.setEnabledStatus(email, true);
-        userService.addRole(email, "ROLE_ADMIN");
+        createValidationCode(freshUser, true);
         AuthenticationToken a = loginUsingPassword(email, (user) -> userService.match(password, user));
         return a;
 
+    }
+
+    @Transactional
+    public ValidationCode createValidationCode(User user, boolean sendEmail) {
+        ValidationCode code = validationCodeService.createForEmailValidation(user);
+        if (sendEmail) {
+            String template = properties.getValidationEmailTemplate();
+            template = template.replace("${link}",
+                    properties.getValidationBaseUrl() + "?code=" + code.getCode() + "&email=" + this.encodeText(user.getEmail()));
+            emailService.sendEmail(properties.getFromEmail(), user.getEmail(), template);
+        }
+        return code;
     }
 
     public void forgotPassword(String email) {
