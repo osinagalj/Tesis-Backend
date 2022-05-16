@@ -13,11 +13,11 @@ public interface EnsolversCoreApiDocumentationConfiguration {
     String swaggerPassword();
 
     default String basePackageName() {
-        return "com.ensolvers.core";
+        return "com.unicen.app";
     }
 
     default ApiInfo apiInfo() {
-        return new ApiInfo("Ensolvers Core Generic API", "", "1.0", "", new Contact("Ensolvers", "", ""), "", "", Collections.emptyList());
+        return new ApiInfo("Generic API", "", "1.0", "", new Contact("Unicen", "", ""), "", "", Collections.emptyList());
     }
 
     default ApiKey apiKey() {

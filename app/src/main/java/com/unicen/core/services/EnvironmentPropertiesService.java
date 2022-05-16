@@ -1,16 +1,13 @@
 package com.unicen.core.services;
 
-import com.unicen.core.configuration.AppEnvironment;
 import com.unicen.core.exceptions.CoreApiException;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
 @Component("environmentPropertiesService")
 public class EnvironmentPropertiesService {

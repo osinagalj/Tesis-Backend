@@ -29,7 +29,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-// @formatter:off
 public class SecurityConfiguration {
 
     @Bean
@@ -41,11 +40,11 @@ public class SecurityConfiguration {
     @Order(2)
     public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-        @Autowired private AuthenticationService authenticationService;
+        @Autowired
+        private AuthenticationService authenticationService;
 
-        @Autowired(required = false) private EnsolversCoreSecurityConfiguration securityConfiguration;
-
-
+        @Autowired(required = false)
+        private EnsolversCoreSecurityConfiguration securityConfiguration;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -63,7 +62,7 @@ public class SecurityConfiguration {
         @Bean
         CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://staging.bluebutterfly.com", "https://bluebutterfly.com"));
+            configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
             configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", configuration);
@@ -75,15 +74,16 @@ public class SecurityConfiguration {
     @Order(1)
     public class ApiDocumentationSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-        @Autowired(required = false) private EnsolversCoreApiDocumentationConfiguration apiDocumentationConfiguration;
+        @Autowired(required = false)
+        private EnsolversCoreApiDocumentationConfiguration apiDocumentationConfiguration;
 
         @Bean
         public UserDetailsService userDetailsService() {
             User.UserBuilder users = User.builder().passwordEncoder(encoder()::encode);
             InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
             if (apiDocumentationConfiguration != null) {
-            manager.createUser(users.username(apiDocumentationConfiguration.swaggerUsername()).password(apiDocumentationConfiguration.swaggerPassword())
-                    .roles("USER").build());
+                manager.createUser(users.username(apiDocumentationConfiguration.swaggerUsername()).password(apiDocumentationConfiguration.swaggerPassword())
+                        .roles("USER").build());
             }
             return manager;
         }
