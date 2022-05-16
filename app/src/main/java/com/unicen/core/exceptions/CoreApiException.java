@@ -1,21 +1,20 @@
 package com.unicen.core.exceptions;
 
-import com.unicen.core.dto.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
  * Main RuntimeException used to build a that will be returned to the client.
  * This exception is handled in ControllerExceptionHandler#handleCoreException to build the response.
- *
+ * <p>
  * The content of the ApiResultDTO / response is built using the values that were set on the instance of this class:
- *  - errorCode: An enum that will be set to the variable <code>errorCode</code> in ApiResultDTO.
- *  - apiResultMessage: String that will be set to the variable <code>message</code> in ApiResultDTO.
- *  - httpStatus: The HTTP status code of the response.
- *  - logError: A boolean indicating whether the exception should be logged to the console.
- *
- *  Additionally, we can pass an internal message using the constructor of this class, which will be logged to the console.
- *  This is if we want to detail information to debug and not send it to the client.
+ * - errorCode: An enum that will be set to the variable <code>errorCode</code> in ApiResultDTO.
+ * - apiResultMessage: String that will be set to the variable <code>message</code> in ApiResultDTO.
+ * - httpStatus: The HTTP status code of the response.
+ * - logError: A boolean indicating whether the exception should be logged to the console.
+ * <p>
+ * Additionally, we can pass an internal message using the constructor of this class, which will be logged to the console.
+ * This is if we want to detail information to debug and not send it to the client.
  */
 @Getter
 public class CoreApiException extends RuntimeException {
@@ -103,6 +102,14 @@ public class CoreApiException extends RuntimeException {
         return new CoreApiException("Object of type [" + objectClass + "] with id [" + id + "] not found", "Object not found", HttpStatus.NOT_FOUND, ErrorCode.OBJECT_NOT_FOUND, false);
     }
 
+    public static CoreApiException resourceCannotBeLoaded(Class<?> objectClass, Object id) {
+        return new CoreApiException("Object of type [" + objectClass + "] with id [" + id + "] not found", "Object not found", HttpStatus.NOT_FOUND, ErrorCode.OBJECT_NOT_FOUND, false);
+    }
+
+    public static CoreApiException resourceCannotBeLoaded(String path) {
+        return new CoreApiException("Resource " + path + " can't be loaded", HttpStatus.NOT_FOUND, ErrorCode.OBJECT_NOT_FOUND, true);
+    }
+
     public static CoreApiException objectNotFound(Class<?> objectClass, String property, Object id) {
         return new CoreApiException("Object of type [" + objectClass + "] with " + property + " [" + id + "] not found", "Object not found", HttpStatus.NOT_FOUND, ErrorCode.OBJECT_NOT_FOUND, false);
     }
@@ -125,7 +132,4 @@ public class CoreApiException extends RuntimeException {
         return new CoreApiException("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GENERIC_ERROR, true, e);
     }
 
-    public static CoreApiException geolocationError(String apiResultMessage) {
-        return new CoreApiException(apiResultMessage, HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GEOLOCATION, true);
-    }
 }

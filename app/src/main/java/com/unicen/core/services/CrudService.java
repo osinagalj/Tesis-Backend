@@ -1,7 +1,7 @@
 package com.unicen.core.services;
 
 import com.unicen.core.dto.AuthenticatedUserDTO;
-import com.unicen.core.exceptions.ObjectNotFoundException;
+import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.PublicModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +39,7 @@ public abstract class CrudService<Model, Repository extends PagingAndSortingRepo
     @Transactional(readOnly = true)
     public Model getById(long id) {
         return getById(id, () -> {
-            throw new ObjectNotFoundException(getObjectClass(), id);
+            throw CoreApiException.objectNotFound("Id not found" + id);
         });
     }
 
@@ -92,7 +92,7 @@ public abstract class CrudService<Model, Repository extends PagingAndSortingRepo
 
     /**
      * This method specifies how a model object should be updated from a DTO
-     *
+     * <p>
      * It should return the object with its data updated
      *
      * @param existingObject model object to be updated

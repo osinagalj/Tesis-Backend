@@ -1,5 +1,6 @@
 package com.unicen.core.dto;
 
+import com.unicen.core.exceptions.ErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -16,7 +17,8 @@ import lombok.Setter;
 public class ApiResultDTO<T> {
     private static final String OPERATION_SUCCESSFUL = "Operation successful";
 
-    @NonNull private String message;
+    @NonNull
+    private String message;
     private Enum errorCode;
     boolean success;
     private T content;

@@ -2,7 +2,6 @@ package com.unicen.core.services;
 
 import com.unicen.core.configuration.PasswordRulesConfiguration;
 import com.unicen.core.exceptions.CoreApiException;
-import com.unicen.core.exceptions.ObjectValidationFailed;
 import com.unicen.core.model.*;
 import com.unicen.core.repositories.AuthenticationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 @Service
-public class AuthenticationService extends CrudService<AuthenticationToken, AuthenticationTokenRepository> implements ObservableService<AuthEvent, Object> {
+public class AuthenticationService extends CrudService<AuthenticationToken, AuthenticationTokenRepository> {
 
     private final UserService userService;
     private final ValidationCodeService validationCodeService;
     private final ApplicationPropertiesService properties;
-    private final List<com.unicen.core.services.Observer<AuthEvent, Object>> observers;
 
     private final PasswordRulesConfiguration passwordRulesConfiguration;
 
@@ -35,7 +33,7 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         this.validationCodeService = validationCodeService;
         this.properties = properties;
         this.passwordRulesConfiguration = passwordRulesConfiguration != null ? passwordRulesConfiguration : new DefaultPasswordRulesConfiguration();
-        this.observers = new ArrayList<>();
+
     }
 
     @Override
@@ -55,7 +53,7 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
             throw CoreApiException.authenticationFailed(false);
         });
         if (user.disabled()) {
-            throw new ObjectValidationFailed(user, "User is not enabled");
+            throw CoreApiException.validationError("User is not enabled");
         }
         if (!challenge.apply(user)) {
             throw CoreApiException.authenticationFailed(true);
@@ -143,21 +141,6 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         } else {
             throw CoreApiException.validationError("[AUTH] Token not found for ID: " + userId, "The user does not have an associated token", true);
         }
-    }
-
-    @Override
-    public void addObserver(com.unicen.core.services.Observer<AuthEvent, Object> observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void removeObserver(com.unicen.core.services.Observer<AuthEvent, Object> observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public List<Observer<AuthEvent, Object>> getObservers() {
-        return Collections.unmodifiableList(observers);
     }
 
     private static class DefaultPasswordRulesConfiguration implements PasswordRulesConfiguration {

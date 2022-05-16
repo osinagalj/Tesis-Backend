@@ -1,4 +1,4 @@
-package com.unicen.core.dto;
+package com.unicen.core.exceptions;
 
 /**
  * List of potential errors returned by the API
@@ -12,7 +12,6 @@ public enum ErrorCode {
     OBJECT_NOT_FOUND,
     INVALID_FILE_SIZE,
     EMAIL_TAKEN,
-    GEOLOCATION,
     OBJECT_ALREADY_EXISTS,
     VALIDATION_ERROR
 }

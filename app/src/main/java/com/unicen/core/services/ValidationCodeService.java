@@ -1,6 +1,6 @@
 package com.unicen.core.services;
 
-import com.unicen.core.exceptions.ObjectNotFoundException;
+import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.User;
 import com.unicen.core.model.ValidationCode;
 import com.unicen.core.model.ValidationType;
@@ -35,13 +35,14 @@ public class ValidationCodeService extends CrudService<ValidationCode, Validatio
     // TODO check if it makes sense to throw an Exception here or not
     public void useCode(String code, User user, Runnable action) {
         ValidationCode validationCode = getValidationCode(code, user.getEmail());
-
         action.run();
         repository.save(validationCode.expire());
     }
 
     private ValidationCode getValidationCode(String code, String valInfo) {
-        return repository.findByCodeAndValidationInformation(code, valInfo).orElseThrow(() -> new ObjectNotFoundException(code.getClass(), "code", code));
+        return repository.findByCodeAndValidationInformation(code, valInfo).orElseThrow(() ->
+                CoreApiException.objectNotFound("code: " + code)
+        );
     }
 
     @Transactional(readOnly = true)

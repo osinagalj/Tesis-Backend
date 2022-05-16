@@ -1,10 +1,8 @@
 package com.unicen.core.controller;
 
-
 import com.unicen.core.dto.ApiResultDTO;
-import com.unicen.core.dto.ErrorCode;
+import com.unicen.core.exceptions.ErrorCode;
 import com.unicen.core.exceptions.CoreApiException;
-import com.unicen.core.exceptions.ObjectNotFoundException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -30,15 +28,7 @@ public class ControllerExceptionHandler {
     // ------------- Custom exceptions -------------
     @ExceptionHandler(CoreApiException.class)
     public ResponseEntity<ApiResultDTO<String>> handleCoreException(CoreApiException e) {
-        if (e.isLogError()) {
-
-        }
         return ResponseEntity.status(e.getHttpStatus()).body(ApiResultDTO.ofError(e.getErrorCode(), e.getApiResultMessage()));
-    }
-
-    @ExceptionHandler(ObjectNotFoundException.class)
-    public ResponseEntity<ApiResultDTO<String>> handleException(ObjectNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResultDTO.ofError(ErrorCode.OBJECT_NOT_FOUND, "Not found"));
     }
 
     // ------------- Predefined exceptions -------------

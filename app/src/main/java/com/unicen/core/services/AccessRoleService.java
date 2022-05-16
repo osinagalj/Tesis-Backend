@@ -1,6 +1,6 @@
 package com.unicen.core.services;
 
-import com.unicen.core.exceptions.ObjectNotFoundException;
+import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.repositories.AccessRoleRepository;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,7 @@ public class AccessRoleService extends PublicObjectCrudService<AccessRole, Acces
     @Transactional(readOnly = true)
     public AccessRole getByName(String name) {
         return getByName(name, () -> {
-            throw new ObjectNotFoundException(AccessRole.class, "name", name);
+            throw CoreApiException.objectNotFound("name: " + name);
         });
     }
 }

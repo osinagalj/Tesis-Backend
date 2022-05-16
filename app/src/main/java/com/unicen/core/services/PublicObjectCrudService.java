@@ -1,6 +1,6 @@
 package com.unicen.core.services;
 
-import com.unicen.core.exceptions.ObjectNotFoundException;
+import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.PublicModel;
 import com.unicen.core.repositories.PublicObjectRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public abstract class PublicObjectCrudService<Model extends PublicModel, Reposit
     @Transactional
     public Model getByExternalId(String id) {
         return getByExternalId(id, () -> {
-            throw new ObjectNotFoundException(getObjectClass(), "id", id);
+            throw CoreApiException.objectNotFound("id: " + id);
         });
     }
 

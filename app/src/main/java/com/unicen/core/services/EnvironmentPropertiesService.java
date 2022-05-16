@@ -1,20 +1,14 @@
 package com.unicen.core.services;
 
 import com.unicen.core.configuration.AppEnvironment;
-import com.unicen.core.configuration.OptionalProperty;
-import com.unicen.core.exceptions.ConfigurationException;
 import com.unicen.core.exceptions.CoreApiException;
-import com.unicen.core.utils.JsonMap;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,25 +44,19 @@ public class EnvironmentPropertiesService {
 
     protected String property(String propertyName) {
         String value = env.getProperty(propertyName);
-
         if (value == null || value.trim().equals("")) {
             throw CoreApiException.objectNotFound("Property " + propertyName + " not defined");
         }
-
         return value;
     }
 
     protected String property(String propertyName, String defaultValue) {
         String value = env.getProperty(propertyName);
-
         if (value == null || value.trim().equals("")) {
             return defaultValue;
         }
-
         return value;
     }
-
-
 
     protected boolean booleanProperty(String propertyName) {
         return Boolean.parseBoolean(property(propertyName));
@@ -86,16 +74,13 @@ public class EnvironmentPropertiesService {
         try {
             return IOUtils.toString(getClass().getClassLoader().getResource(path), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw ConfigurationException.resourceCannotBeLoaded(path);
+            throw CoreApiException.resourceCannotBeLoaded(path);
         }
     }
-
-
 
     // TODO properties below should we moved to ApplicationEnvironmentProperties - i.e. to ensolvers-core-backend-api
     public boolean isOAuthEnabled() {
         return booleanProperty(OAUTH_ENABLED_PROPERTY);
     }
-
 
 }

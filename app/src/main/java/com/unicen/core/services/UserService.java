@@ -1,9 +1,6 @@
 package com.unicen.core.services;
 
-
 import com.unicen.core.exceptions.CoreApiException;
-import com.unicen.core.exceptions.ObjectNotFoundException;
-import com.unicen.core.exceptions.ValidationException;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.model.AuthenticationToken;
 import com.unicen.core.model.User;
@@ -58,7 +55,8 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
     /**
      * Updates the password for a specific user
-     * @param user the user which passwords is going to be updated
+     *
+     * @param user          the user which passwords is going to be updated
      * @param plainPassword the plain plainPassword to be updated
      */
     public void updatePassword(User user, String plainPassword) {
@@ -79,9 +77,8 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     @Transactional
     public User registerWithPassword(String firstName, String lastName, String email, String plainPassword) {
         if (plainPassword == null) {
-            throw new ValidationException("Password not provided");
+            throw CoreApiException.validationError("Password not provided");
         }
-
         return repository.save(new User(firstName, lastName, email, userPasswordEncoder.encode(plainPassword)));
     }
 
@@ -100,7 +97,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     @Transactional(readOnly = true)
     public User getByEmail(String email) {
         return getByEmail(email, () -> {
-            throw new ObjectNotFoundException(User.class, "email", email);
+            throw CoreApiException.objectNotFound("email: " + email);
         });
     }
 
@@ -112,9 +109,10 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     /**
      * Returns a User matching the email address, creating it if it does not exist (with a password) or returning an existing one if
      * it is registered already in the DB
-     * @param firstName first name of the {@link User} to be created (if it does not exist)
-     * @param lastName last name of the {@link User} to be created (if it does not exist)
-     * @param email email of the {@link User} to be created / obtained
+     *
+     * @param firstName     first name of the {@link User} to be created (if it does not exist)
+     * @param lastName      last name of the {@link User} to be created (if it does not exist)
+     * @param email         email of the {@link User} to be created / obtained
      * @param clearPassword password of the {@link User} to be created (if it does not exist)
      * @return the existing/created {@link User}
      */
@@ -126,9 +124,10 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     /**
      * Returns a User matching the email address, creating it if it does not exist or returning an existing one if
      * it is registered already in the DB
+     *
      * @param firstName first name of the {@link User} to be created (if it does not exist)
-     * @param lastName last name of the {@link User} to be created (if it does not exist)
-     * @param email email of the {@link User} to be created / obtained
+     * @param lastName  last name of the {@link User} to be created (if it does not exist)
+     * @param email     email of the {@link User} to be created / obtained
      * @return the existing/created {@link User}
      */
     @Transactional
@@ -139,67 +138,55 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     /**
      * Returns a User matching the email address, creating it if it does not exist or returning an existing one if
      * it is registered already in the DB. When creating the user, it also attached a specific role
+     *
      * @param firstName first name of the {@link User} to be created (if it does not exist)
-     * @param lastName last name of the {@link User} to be created (if it does not exist)
-     * @param email email of the {@link User} to be created / obtained
-     * @param roleName name of the role to be assigned to the user
+     * @param lastName  last name of the {@link User} to be created (if it does not exist)
+     * @param email     email of the {@link User} to be created / obtained
+     * @param roleName  name of the role to be assigned to the user
      * @return the existing/created {@link User}
      */
     @Transactional
     public User ensureWithRole(String firstName, String lastName, String email, String roleName) {
         User user = ensure(firstName, lastName, email);
         AccessRole role = accessRoleService.ensure(roleName);
-
         user.addRole(role);
         save(user);
-
         return user;
     }
 
     @Transactional
     public User createAdmin(String firstName, String lastName, String email, String clearPassword) {
         User user = ensure(firstName, lastName, email, clearPassword);
-
         user.addRole(EntitiesDrawer.adminRole());
         user.setDisabledAt(null);
         save(user);
-
         return user;
     }
 
     @Transactional
     public User addRole(String email, String roleName) {
         User user = getByEmail(email);
-
         user.addRole(accessRoleService.getByName(roleName));
         save(user);
-
         this.invalidateAuthTokenEntryFromCache(user);
-
         return user;
     }
 
     @Transactional
     public User setEnabledStatus(String email, boolean enabled) {
         User user = getByEmail(email);
-
         user.setDisabledAt(enabled ? null : new Date());
         save(user);
-
         this.invalidateAuthTokenEntryFromCache(user);
-
         return user;
     }
 
     @Transactional
     public User removeRole(String email, String roleName) {
         User user = getByEmail(email);
-
         user.removeRole(accessRoleService.getByName(roleName));
         save(user);
-
         this.invalidateAuthTokenEntryFromCache(user);
-
         return user;
     }
 
@@ -212,17 +199,13 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     public User removeAllRoles(User user) {
         user.setRoles(new HashSet<>());
         save(user);
-
         this.invalidateAuthTokenEntryFromCache(user);
-
         return user;
     }
 
     public User markAsEnabled(String email) {
         User user = save(getByEmail(email).enable());
-
         this.invalidateAuthTokenEntryFromCache(user);
-
         return user;
     }
 
