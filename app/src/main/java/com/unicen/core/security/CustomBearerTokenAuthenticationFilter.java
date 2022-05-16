@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Generic class that filters requests by a Bearer token present on the request
- *
+ * <p>
  * TODO move to java-fox, improve documentation
  */
 public abstract class CustomBearerTokenAuthenticationFilter extends OncePerRequestFilter {
@@ -25,28 +25,21 @@ public abstract class CustomBearerTokenAuthenticationFilter extends OncePerReque
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader(AUTHORIZATION_HEADER);
         String apiKeyValue = request.getHeader(API_KEY_HEADER);
-
         allowCors(request, response);
-
         if (preflightRequest(request)) {
             response.setStatus(200);
             return;
         }
-
         if (getWhitelistedPaths().stream().anyMatch(uriPattern -> request.getRequestURI().matches(uriPattern))) {
             filterChain.doFilter(request, response);
             return;
         }
-
         // ensure token as a value
         Authentication auth = null;
         if (authorization != null) {
             String token = authorization.replaceAll("Bearer", "").trim();
             auth = this.getAuthorizationFromToken(token);
-        } else if (apiKeyValue != null) {
-            auth = this.getAuthorizationFromApiKeyValue(apiKeyValue);
         }
-
         if (auth == null) {
             logger.warn("Invalid Authorization. Token: [" + authorization + "]. Api Key: [" + apiKeyValue + "].");
             response.setStatus(401);
@@ -71,7 +64,5 @@ public abstract class CustomBearerTokenAuthenticationFilter extends OncePerReque
     protected abstract List<String> getWhitelistedPaths();
 
     protected abstract Authentication getAuthorizationFromToken(String token);
-
-    protected abstract Authentication getAuthorizationFromApiKeyValue(String token);
 
 }

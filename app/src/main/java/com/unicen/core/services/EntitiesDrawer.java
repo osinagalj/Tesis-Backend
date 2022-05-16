@@ -2,13 +2,7 @@ package com.unicen.core.services;
 
 import com.unicen.core.spring.lightweightcontainer.GlobalApplicationContext;
 import com.unicen.core.model.AccessRole;
-import com.unicen.core.model.ApiKey;
-import com.unicen.core.model.ApiScope;
 import com.unicen.core.model.User;
-
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
 
 public class EntitiesDrawer {
 

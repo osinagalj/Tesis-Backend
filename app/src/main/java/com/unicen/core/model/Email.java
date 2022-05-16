@@ -10,8 +10,6 @@ import javax.persistence.Table;
 
 /**
  * Representation of an Email
- *
- * @author Sebastian Javier Guzman
  */
 @Getter
 @Setter
@@ -19,8 +17,10 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Table(name = "core_email")
 public class Email extends AuditableModel<Email> {
-    @Column(name = "sender") private String from;
-    @Column(name = "recipients") private String to;
+    @Column(name = "sender")
+    private String from;
+    @Column(name = "recipients")
+    private String to;
     private String subject;
     private String body;
     private Boolean isHtml;

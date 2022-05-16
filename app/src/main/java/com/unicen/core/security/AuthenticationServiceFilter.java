@@ -1,12 +1,9 @@
 package com.unicen.core.security;
 
-
-import com.unicen.core.model.ApiKey;
 import com.unicen.core.model.AuthenticationToken;
 import com.unicen.core.model.User;
 import com.unicen.core.services.AuthenticationService;
 import org.springframework.security.core.Authentication;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,30 +38,14 @@ public class AuthenticationServiceFilter extends CustomBearerTokenAuthentication
     @Override
     protected Authentication getAuthorizationFromToken(String token) {
         Optional<AuthenticationToken> maybeToken = Optional.ofNullable(
-            this.authenticationService.getByToken(token)
+                this.authenticationService.getByToken(token)
         );
-
         // no token, no authentication returned
         if (maybeToken.isEmpty() || maybeToken.get().getUser().disabled()) {
             return null;
         }
-
         User user = maybeToken.get().getUser();
-
         return GenericAuthenticationToken.of(user);
     }
 
-    @Override
-    protected Authentication getAuthorizationFromApiKeyValue(String token) {
-        Optional<ApiKey> maybeApiKey = Optional.ofNullable(
-            this.authenticationService.getApiKey(token)
-        );
-
-        // no token, no authentication returned
-        if (maybeApiKey.isEmpty()) {
-            return null;
-        }
-
-        return GenericAuthenticationToken.of(maybeApiKey.get());
-    }
 }

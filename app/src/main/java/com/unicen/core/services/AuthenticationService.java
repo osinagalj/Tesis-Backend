@@ -1,6 +1,5 @@
 package com.unicen.core.services;
 
-
 import com.unicen.core.configuration.PasswordRulesConfiguration;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.exceptions.ObjectValidationFailed;
@@ -24,19 +23,16 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
 
     private final UserService userService;
     private final ValidationCodeService validationCodeService;
-    private final ApiKeyService apiKeyService;
     private final ApplicationPropertiesService properties;
     private final List<com.unicen.core.services.Observer<AuthEvent, Object>> observers;
 
     private final PasswordRulesConfiguration passwordRulesConfiguration;
 
     public AuthenticationService(AuthenticationTokenRepository repository, UserService userService, ValidationCodeService validationCodeService,
-                                 ApiKeyService apiKeyService,
                                  ApplicationPropertiesService properties, @Autowired(required = false) PasswordRulesConfiguration passwordRulesConfiguration) {
         super(repository);
         this.userService = userService;
         this.validationCodeService = validationCodeService;
-        this.apiKeyService = apiKeyService;
         this.properties = properties;
         this.passwordRulesConfiguration = passwordRulesConfiguration != null ? passwordRulesConfiguration : new DefaultPasswordRulesConfiguration();
         this.observers = new ArrayList<>();
@@ -53,24 +49,17 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         return this.repository.getByToken(token).orElse(null);
     }
 
-    public ApiKey getApiKey(String key) {
-        return this.apiKeyService.getByKey(key);
-    }
-
     @Transactional
     private AuthenticationToken loginUsingPassword(String email, Function<User, Boolean> challenge) {
         User user = userService.getByEmail(email, () -> {
             throw CoreApiException.authenticationFailed(false);
         });
-
         if (user.disabled()) {
             throw new ObjectValidationFailed(user, "User is not enabled");
         }
-
         if (!challenge.apply(user)) {
             throw CoreApiException.authenticationFailed(true);
         }
-
         return renewToken(user);
     }
 
@@ -83,11 +72,9 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     public AuthenticationToken loginUsingCode(String email, String code) {
         return loginUsingPassword(email, (user) -> {
             AtomicBoolean codeValidationSucceeded = new AtomicBoolean(false);
-
             validationCodeService.useCode(code, user, () -> {
                 codeValidationSucceeded.set(true);
             });
-
             return codeValidationSucceeded.get();
         });
     }
@@ -96,7 +83,6 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     protected void updateData(AuthenticationToken existingObject, AuthenticationToken updatedObject) {
         // Authentication tokens should be immutable
     }
-
 
     @Transactional
     public void validateUserEmailWithAuthenticationCode(String email, String code) {
@@ -107,14 +93,12 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     @Transactional
     public void validateForgotPasswordWithAuthenticationCode(String email, String code, String password) {
         passwordRulesConfiguration.validatePassword(password);
-
         User user = userService.getByEmail(email);
         validationCodeService.useCode(code, user, () -> userService.updatePassword(user, password));
     }
 
     public AuthenticationToken signUpWithPassword(String firstName, String lastName, String email, String password) {
         passwordRulesConfiguration.validatePassword(password);
-
         User freshUser = userService.registerWithPassword(firstName, lastName, email, password);
         userService.setEnabledStatus(email, true);
         userService.addRole(email, "ROLE_ADMIN");
@@ -161,7 +145,6 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         }
     }
 
-
     @Override
     public void addObserver(com.unicen.core.services.Observer<AuthEvent, Object> observer) {
         observers.add(observer);
@@ -181,7 +164,6 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
 
         @Override
         public void validatePassword(String password) {
-
         }
     }
 

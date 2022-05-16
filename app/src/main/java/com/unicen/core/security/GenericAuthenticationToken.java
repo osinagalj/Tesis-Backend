@@ -1,12 +1,10 @@
 package com.unicen.core.security;
 
-import com.unicen.core.model.ApiKey;
 import com.unicen.core.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,10 +19,6 @@ public class GenericAuthenticationToken extends AbstractAuthenticationToken {
 
     public static GenericAuthenticationToken of(User user) {
         return new GenericAuthenticationToken(user.getId(), user.getEmail(), generateAuthorities(user));
-    }
-
-    public static GenericAuthenticationToken of(ApiKey apiKey) {
-        return new GenericAuthenticationToken(apiKey.getIssuer().getId(), apiKey.getIssuer().getEmail(), generateAuthorities(apiKey));
     }
 
     public GenericAuthenticationToken(Long userId, String username) {
@@ -55,11 +49,7 @@ public class GenericAuthenticationToken extends AbstractAuthenticationToken {
     private static List<GrantedAuthority> generateAuthorities(User user) {
         return user.getRoles().stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
     }
-
-    private static List<GrantedAuthority> generateAuthorities(ApiKey apiKey) {
-        return apiKey.getScopes().stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
-    }
-
+    
     public boolean hasAuthority(String... roles) {
         return this.getAuthorities().stream().anyMatch(a -> Arrays.asList(roles).contains(a.getAuthority()));
     }
