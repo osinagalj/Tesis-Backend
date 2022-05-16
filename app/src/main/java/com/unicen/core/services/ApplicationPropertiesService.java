@@ -55,8 +55,4 @@ public class ApplicationPropertiesService extends EnvironmentPropertiesService {
         return listProperty("app.oauth2.authorizedRedirectUris");
     }
 
-    public boolean adminEndpointsEnabled() {
-        return booleanProperty("application.admin-endpoints.enabled", false);
-    }
-
 }

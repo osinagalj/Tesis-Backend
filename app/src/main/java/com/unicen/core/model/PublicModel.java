@@ -7,7 +7,8 @@ import java.util.UUID;
 @MappedSuperclass
 public class PublicModel extends GenericModel {
 
-    @Column(unique = true) protected String externalId;
+    @Column(unique = true)
+    protected String externalId;
 
     public static String generateExternalId() {
         return UUID.randomUUID().toString().replace("-", "");
@@ -20,10 +21,10 @@ public class PublicModel extends GenericModel {
     // Accessors
     public void setExternalId(String anId) {
         externalId = anId;
-    };
+    }
 
     public String getExternalId() {
         return externalId;
-    };
-
+    }
+    
 }
