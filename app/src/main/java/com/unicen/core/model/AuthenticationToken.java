@@ -17,11 +17,13 @@ public class AuthenticationToken extends AuditableModel<AuthenticationToken> {
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE) private User user;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
     private String token;
 
-    @Column(nullable = false) private Date expiresAt;
+    @Column(nullable = false)
+    private Date expiresAt;
 
     public AuthenticationToken() {
     }
