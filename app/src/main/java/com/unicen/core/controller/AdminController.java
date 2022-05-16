@@ -3,7 +3,6 @@ package com.unicen.core.controller;
 
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.dto.UserModelDTO;
-import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.AddRoleRequestDTO;
 import com.unicen.core.model.SignUpRequestDTO;
 import com.unicen.core.model.User;
