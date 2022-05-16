@@ -15,31 +15,10 @@ import java.util.Locale;
 @Component("environmentPropertiesService")
 public class EnvironmentPropertiesService {
 
-    public static final String AWS_SECRETS_ARN_PROPERTY = "aws.secret.manager.secret.arn";
-    public static final String OAUTH_ENABLED_PROPERTY = "core.ensolvers.oauth.enabled";
-    public static final String TOKEN_CLEANING_PROCESSOR_ENABLED = "core.ensolvers.token.cleaning.processor.enabled";
-
-    // method list that shouldn't be checked
-    private List<String> INTERNAL_METHODS = List.of("property", "booleanProperty", "listProperty", "resourceAsString", "ensureValues");
-
     private final Environment env;
-    private final SecretsService secretsService;
 
-    public EnvironmentPropertiesService(Environment env, @Autowired(required = false) SecretsService secretsService) {
+    public EnvironmentPropertiesService(Environment env) {
         this.env = env;
-        this.secretsService = secretsService;
-    }
-
-    public AppEnvironment getEnv() {
-        return AppEnvironment.valueOf(property("env").toUpperCase(Locale.ROOT));
-    }
-
-    public String getSecretARN() {
-        return property(AWS_SECRETS_ARN_PROPERTY, "");
-    }
-
-    public String getImagesBucket() {
-        return property("aws.images.bucket");
     }
 
     protected String property(String propertyName) {
@@ -62,10 +41,6 @@ public class EnvironmentPropertiesService {
         return Boolean.parseBoolean(property(propertyName));
     }
 
-    protected boolean booleanProperty(String propertyName, boolean defaultValue) {
-        return Boolean.parseBoolean(property(propertyName, Boolean.toString(defaultValue)));
-    }
-
     protected List<String> listProperty(String propertyName) {
         return List.of(property(propertyName).split(","));
     }
@@ -76,11 +51,6 @@ public class EnvironmentPropertiesService {
         } catch (IOException e) {
             throw CoreApiException.resourceCannotBeLoaded(path);
         }
-    }
-
-    // TODO properties below should we moved to ApplicationEnvironmentProperties - i.e. to ensolvers-core-backend-api
-    public boolean isOAuthEnabled() {
-        return booleanProperty(OAUTH_ENABLED_PROPERTY);
     }
 
 }

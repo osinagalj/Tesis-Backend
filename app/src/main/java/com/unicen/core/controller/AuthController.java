@@ -1,16 +1,17 @@
 package com.unicen.core.controller;
 
-
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.dto.AuthenticationTokenDTO;
 import com.unicen.core.dto.PublicAuthenticationToken;
+import com.unicen.core.dto.login.ChangePasswordDTO;
+import com.unicen.core.dto.login.LoginRequestDTO;
+import com.unicen.core.dto.login.SignUpRequestDTO;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.services.AuthenticationService;
 import com.unicen.core.services.UserService;
 import com.unicen.core.utils.JsonMap;
 import com.unicen.core.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,8 @@ import java.util.Map;
 public class AuthController extends GenericController<AuthenticationToken, AuthenticationTokenDTO> {
 
     private AuthenticationService authenticationService;
-    @Autowired private UserService userService;
+    @Autowired
+    private UserService userService;
 
     public AuthController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -35,7 +37,6 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
     /**
      * Login a User if the password and email are correct. And Return the session token.
      *
-
      * @return token Authentication Session Token
      */
     @PostMapping("/login")
@@ -59,12 +60,12 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
     }
 
     /**
-    * Send an email to recover your user password.
-    * Returns a message if email is sent.
-    *
-    * @param login User's email and pasword (needs only email).
-    * @return Successful response if the user was register correctly
-    */
+     * Send an email to recover your user password.
+     * Returns a message if email is sent.
+     *
+     * @param login User's email and pasword (needs only email).
+     * @return Successful response if the user was register correctly
+     */
     @PostMapping("/forgot-password")
     public ResponseEntity<ApiResultDTO<String>> forgotPassword(@RequestBody LoginRequestDTO login) {
         authenticationService.forgotPassword(login.getEmail());
@@ -88,8 +89,6 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
 
         return ResponseEntity.ok(ApiResultDTO.ofSuccess(new JsonMap("loginUrl", loginUrl).addProp("label", label).addProp("helper", helper).asJson()));
     }
-
-
 
     /**
      * Receives an email and an accessKey (maybe a password or an access code) and login the User into the App.
@@ -118,12 +117,12 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
     }
 
     /**
-    * Receives an email, validation code and new password to modify your own password.
-    * Returns a Message if password change sucessfully.
-    *
-    * @param changePassword email, validationCode and password key-value pairs.
-    * @return Successful Response.
-    */
+     * Receives an email, validation code and new password to modify your own password.
+     * Returns a Message if password change sucessfully.
+     *
+     * @param changePassword email, validationCode and password key-value pairs.
+     * @return Successful Response.
+     */
     @PostMapping("/validate-forgot-password")
     public ResponseEntity<ApiResultDTO<String>> validateForgotPassword(@RequestBody ChangePasswordDTO changePassword) {
         authenticationService.validateForgotPasswordWithAuthenticationCode(changePassword.getEmail(), changePassword.getValidationCode(),

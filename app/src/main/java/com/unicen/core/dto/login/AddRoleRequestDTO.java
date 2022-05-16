@@ -1,4 +1,4 @@
-package com.unicen.core.model;
+package com.unicen.core.dto.login;
 
 import lombok.Getter;
 import lombok.Setter;

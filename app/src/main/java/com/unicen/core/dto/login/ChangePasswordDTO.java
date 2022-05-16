@@ -1,5 +1,6 @@
-package com.unicen.core.model;
+package com.unicen.core.dto.login;
 
+import com.unicen.core.model.DtoAble;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

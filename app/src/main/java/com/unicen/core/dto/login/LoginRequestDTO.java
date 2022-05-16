@@ -1,4 +1,4 @@
-package com.unicen.core.model;
+package com.unicen.core.dto.login;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;

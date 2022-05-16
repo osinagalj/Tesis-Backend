@@ -9,16 +9,12 @@ import java.util.List;
 @Component
 public class ApplicationPropertiesService extends EnvironmentPropertiesService {
 
-    public ApplicationPropertiesService(Environment env, @Autowired(required = false) SecretsService secretsService) {
-        super(env, secretsService);
+    public ApplicationPropertiesService(Environment env) {
+        super(env);
     }
 
     public String getFromEmail() {
         return property("application.from-email");
-    }
-
-    public String getBaseUrl() {
-        return property("application.base-url");
     }
 
     public String getValidationBaseUrl() {
@@ -29,10 +25,6 @@ public class ApplicationPropertiesService extends EnvironmentPropertiesService {
     public String getValidationForgotPassword() {
         String defaultValidationForgotPassword = "http://localhost:8080/auth/validate-forgot-password";
         return property("application.validation.forgot-password", defaultValidationForgotPassword);
-    }
-
-    public boolean isSignUpEnabled() {
-        return booleanProperty("application.sign-up.enabled");
     }
 
     public String getValidationForgotPasswordTemplate() {
@@ -49,10 +41,6 @@ public class ApplicationPropertiesService extends EnvironmentPropertiesService {
 
     public String getLoginEmailTemplate() {
         return resourceAsString("templates/login-email.html");
-    }
-
-    public List<String> getAuthorizedRequestUris() {
-        return listProperty("app.oauth2.authorizedRedirectUris");
     }
 
 }
