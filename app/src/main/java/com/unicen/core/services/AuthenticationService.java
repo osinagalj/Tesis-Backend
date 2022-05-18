@@ -98,13 +98,10 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         validationCodeService.useCode(code, user, () -> userService.updatePassword(user, password));
     }
 
-    public AuthenticationToken signUpWithPassword(String firstName, String lastName, String email, String password) {
+    public void signUpWithPassword(String firstName, String lastName, String email, String password) {
         passwordRulesConfiguration.validatePassword(password);
         User freshUser = userService.registerWithPassword(firstName, lastName, email, password);
         createValidationCode(freshUser, true);
-        AuthenticationToken a = loginUsingPassword(email, (user) -> userService.match(password, user));
-        return a;
-
     }
 
     @Transactional
@@ -112,8 +109,7 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         ValidationCode code = validationCodeService.createForEmailValidation(user);
         if (sendEmail) {
             String template = properties.getValidationEmailTemplate();
-            template = template.replace("${link}",
-                    properties.getValidationBaseUrl() + "?code=" + code.getCode() + "&email=" + this.encodeText(user.getEmail()));
+            template = template.replace("${link}", properties.getValidationBaseUrl() + "?code=" + code.getCode() + "&email=" + this.encodeText(user.getEmail()));
             emailService.sendEmail(properties.getFromEmail(), user.getEmail(), template);
         }
         return code;

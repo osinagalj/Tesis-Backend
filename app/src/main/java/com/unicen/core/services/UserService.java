@@ -97,7 +97,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     @Transactional(readOnly = true)
     public User getByEmail(String email) {
         return getByEmail(email, () -> {
-            throw CoreApiException.objectNotFound("email: " + email);
+            throw CoreApiException.objectNotFound("The email " + email + " does not exists.");
         });
     }
 

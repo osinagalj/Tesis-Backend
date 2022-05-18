@@ -54,9 +54,10 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
      */
     @PostMapping("/sign-up")
     public ResponseEntity<ApiResultDTO<String>> login(@RequestBody SignUpRequestDTO signUpRequestDTO) {
+
         authenticationService.signUpWithPassword(signUpRequestDTO.getFirstName(), signUpRequestDTO.getLastName(), signUpRequestDTO.getEmail(),
                 signUpRequestDTO.getPassword());
-        return ResponseEntity.ok(ApiResultDTO.ofSuccess(new JsonMap("helper", "Your account has been created successfully").asJson()));
+        return ResponseEntity.ok(ApiResultDTO.ofSuccess(new JsonMap("helper", "Your account has been created successfully. Please verify your email").asJson()));
     }
 
     /**
