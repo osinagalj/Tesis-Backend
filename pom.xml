@@ -62,12 +62,7 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        <!-- Slack  -->
-        <dependency>
-            <groupId>com.ensolvers.fox-java</groupId>
-            <artifactId>fox-alerts</artifactId>
-            <version>0.0.3-SNAPSHOT</version>
-        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
         <dependency>
             <groupId>org.modelmapper</groupId>
