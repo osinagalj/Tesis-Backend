@@ -5,6 +5,8 @@ bin-release/
 [Bb]in/
 
 .idea
+target
+target/
 
 # Other files and folders
 .settings/
