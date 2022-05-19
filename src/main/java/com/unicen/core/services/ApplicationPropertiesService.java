@@ -19,7 +19,7 @@ public class ApplicationPropertiesService extends EnvironmentPropertiesService {
 
     public String getValidationBaseUrl() {
         String defaultValidationBaseUrl = "http://localhost:8080/auth/validate";
-        return defaultValidationBaseUrl;
+        return property("application.validation-base-url", defaultValidationBaseUrl);
     }
 
     public String getValidationForgotPassword() {
