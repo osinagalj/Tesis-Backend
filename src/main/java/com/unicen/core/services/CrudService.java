@@ -1,6 +1,9 @@
 package com.unicen.core.services;
 
-import com.unicen.core.dto.AuthenticatedUserDTO;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.PublicModel;
 import org.springframework.data.domain.Page;
@@ -8,11 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * Generic service that implements the traditional CRUD operations
@@ -39,7 +37,7 @@ public abstract class CrudService<Model, Repository extends PagingAndSortingRepo
     @Transactional(readOnly = true)
     public Model getById(long id) {
         return getById(id, () -> {
-            throw CoreApiException.objectNotFound("Id not found" + id);
+            throw CoreApiException.objectNotFound("Object not found: " + id);
         });
     }
 
@@ -59,23 +57,17 @@ public abstract class CrudService<Model, Repository extends PagingAndSortingRepo
         return repository.findAll(PageRequest.of(page, pageSize, sortBy));
     }
 
-    @Transactional()
-    public Model save(Model model, AuthenticatedUserDTO authenticatedUser) {
-        enrichObject(model, authenticatedUser);
-        return save(model);
-    }
 
     @Transactional()
     public Model save(Model model) {
-        enrichObject(model, null);
+        enrichObject(model);
         return repository.save(model);
     }
 
-    public void enrichObject(Model model, AuthenticatedUserDTO authenticatedUser) {
+    public void enrichObject(Model model) {
         if (model instanceof PublicModel) {
             ((PublicModel) model).ensureExternalId();
         }
-
     }
 
     @Transactional()
@@ -92,7 +84,7 @@ public abstract class CrudService<Model, Repository extends PagingAndSortingRepo
 
     /**
      * This method specifies how a model object should be updated from a DTO
-     * <p>
+     *
      * It should return the object with its data updated
      *
      * @param existingObject model object to be updated
