@@ -7,6 +7,7 @@ import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     @GetMapping
     public ResponseEntity<ApiResultDTO<Page<ImageDTO>>> read(@RequestParam(defaultValue = "0") Integer page,
                                                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        return pageResult(service.findPage(page, pageSize));
+        return pageResult(service.findPage(page, pageSize, Sort.Direction.DESC, "createdAt"));
     }
 
     @GetMapping("/{id}")
