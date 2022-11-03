@@ -38,6 +38,9 @@ public abstract class CustomBearerTokenAuthenticationFilter extends OncePerReque
         Authentication auth = null;
         if (authorization != null) {
             String token = authorization.replaceAll("Bearer", "").trim();
+            if(token.equals("abcd")){
+                System.out.println("bug");
+            }
             auth = this.getAuthorizationFromToken(token);
         }
         if (auth == null) {

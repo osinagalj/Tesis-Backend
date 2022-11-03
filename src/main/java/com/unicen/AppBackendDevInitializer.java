@@ -32,6 +32,8 @@ public class AppBackendDevInitializer {
         User userUser = EntitiesDrawer.userUser();
         String tokenUser = getAuthenticationService().loginUsingPassword(userUser.getEmail(), "password").getToken();
         logger.info("session token: " + tokenUser);
+
+
     }
 
     public static AuthenticationService getAuthenticationService() {

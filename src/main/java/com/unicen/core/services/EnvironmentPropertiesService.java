@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 @Component("environmentPropertiesService")
@@ -24,6 +25,11 @@ public class EnvironmentPropertiesService {
             throw CoreApiException.objectNotFound("Property " + propertyName + " not defined");
         }
         return value;
+    }
+
+    public Boolean isDevEnvironment(){
+        var a = "dev".equals(Arrays.stream(this.env.getActiveProfiles()).findFirst().get());
+        return "dev".equals(Arrays.stream(this.env.getActiveProfiles()).findFirst().get());
     }
 
     protected String property(String propertyName, String defaultValue) {
