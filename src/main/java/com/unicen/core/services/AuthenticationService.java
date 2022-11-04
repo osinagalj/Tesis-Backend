@@ -86,9 +86,10 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     }
 
     @Transactional
-    public void validateUserEmailWithAuthenticationCode(String email, String code) {
+    public AuthenticationToken validateUserEmailWithAuthenticationCode(String email, String code) {
         User user = userService.getByEmail(email);
         validationCodeService.useCode(code, user, () -> userService.markAsEnabled(user.getEmail()));
+        return renewToken(user);
     }
 
     @Transactional
@@ -109,8 +110,10 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         ValidationCode code = validationCodeService.createForEmailValidation(user);
         if (sendEmail) {
             String template = properties.getValidationEmailTemplate();
-            template = template.replace("${link}", properties.getValidationBaseUrl() + "?code=" + code.getCode() + "&email=" + this.encodeText(user.getEmail()));
-            emailService.sendEmail(properties.getFromEmail(), user.getEmail(), template);
+            /*            template = template.replace("${link}", properties.getValidationBaseUrl() + "?code=" + code.getCode() + "&email=" + this.encodeText(user.getEmail()));
+             */
+            template = template.replace("${code}", code.getCode() );
+            emailService.sendEmail(properties.getFromEmail(), user.getEmail(), "Validation Code", new HashMap<>(), template);
         }
         return code;
     }

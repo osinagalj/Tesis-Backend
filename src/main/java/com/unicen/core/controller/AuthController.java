@@ -111,10 +111,10 @@ public class AuthController extends GenericController<AuthenticationToken, Authe
     }
 
     @GetMapping("/validate")
-    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> validateAccount(@RequestParam(value = "code") String code,
+    public ResponseEntity<ApiResultDTO<AuthenticationToken>> validateAccount(@RequestParam(value = "code") String code,
                                                                                 @RequestParam(value = "email") String email) {
-        authenticationService.validateUserEmailWithAuthenticationCode(email, code);
-        return ok();
+        var user = authenticationService.validateUserEmailWithAuthenticationCode(email, code);
+        return ResponseEntity.ok(ApiResultDTO.ofSuccess(user));
     }
 
     /**

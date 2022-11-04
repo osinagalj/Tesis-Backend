@@ -29,6 +29,8 @@ class EmailServiceTest {
 
         String template = properties.getValidationEmailTemplate();
         template = template.replace("${link}", properties.getValidationBaseUrl() + "?code=1234");
+        template = template.replace("${code}", "1234");
+
         System.out.println("testing..");
         Map<String, String> images = new HashMap<>();
         emailService.sendEmail(properties.getFromEmail(), "osinagalj@gmail.com", "Login", images, template);

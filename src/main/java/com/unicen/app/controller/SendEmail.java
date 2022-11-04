@@ -20,7 +20,7 @@ public class SendEmail {
     @PreAuthorize("permitAll()")
     @GetMapping
     public ResponseEntity<ApiResultDTO<String>> status() {
-        sendEmailService.sendEmail("", "osinagalj@gmail.com", "Test");
+        //sendEmailService.sendEmail("", "osinagalj@gmail.com", "Test");
         return ResponseEntity.ok(ApiResultDTO.ofSuccess("Email has been sent!"));
     }
 

@@ -26,6 +26,7 @@ public class AuthenticationServiceFilter extends CustomBearerTokenAuthentication
     private final AuthenticationService authenticationService;
     private static Logger LOGGER = LoggerFactory.getLogger(AuthenticationServiceFilter.class);
 
+
     private final String TOKEN_DEV = "abcd";
     private final List<String> BASIC_WHITELISTED_PATHS = List.of("/auth/login", "/auth/validate", "/auth/sign-up", "/auth/validate-forgot-password",
             "/auth/forgot-password", "/auth/validate-code", "/auth/login-with-code", "/auth/login-code", "/auth/login-method", "/status",
