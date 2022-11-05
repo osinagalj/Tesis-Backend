@@ -27,7 +27,7 @@ public class EntitiesDrawer {
 
 
     public static User userUser() {
-        User user = newUser("Sample", "User", "user@gmail.com", DEFAULT_PASSWORD);
+        User user = newUser("John", "Johnson", "user@gmail.com", DEFAULT_PASSWORD);
         user.getRoles().clear();
         user.getRoles().add(userRole());
         return getUserService().save(user);

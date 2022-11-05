@@ -68,6 +68,10 @@ public class CoreApiException extends RuntimeException {
         return new CoreApiException("Object already exists", HttpStatus.BAD_REQUEST, ErrorCode.OBJECT_ALREADY_EXISTS, false);
     }
 
+    public static CoreApiException objectAlreadyExists(String apiResultMessage) {
+        return new CoreApiException("Object already exists. " + apiResultMessage, HttpStatus.BAD_REQUEST, ErrorCode.OBJECT_ALREADY_EXISTS, false);
+    }
+
     // 401 - Unauthorized
     public static CoreApiException insufficientPermissions() {
         return insufficientPermissions("User is not authorized to perform this action");

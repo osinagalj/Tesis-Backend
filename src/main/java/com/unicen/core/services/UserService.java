@@ -1,5 +1,6 @@
 package com.unicen.core.services;
 
+import com.unicen.app.dto.ProfileDTO;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.model.AuthenticationToken;
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
-    private final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserPasswordEncoder userPasswordEncoder;
     private final AccessRoleService accessRoleService;
@@ -218,7 +219,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
     private String generateOneTimeAdminSecret() {
         String secret = new RandomStringGenerator(64).nextString();
-        logger.info("OTAS: " + secret);
+        LOGGER.info("Secret: " + secret);
         return secret;
     }
 
@@ -239,5 +240,49 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     public void invalidateAuthTokenEntryFromCache(User user) {
         Optional<AuthenticationToken> maybeUserToken = this.authenticationTokenService.getTokenByUserId(user.getId());
         maybeUserToken.ifPresent(authenticationToken -> this.authenticationTokenService.invalidateTokenFromCache(authenticationToken.getToken()));
+    }
+
+    /**
+     * Returns a User matching the email address, creating it if it does not exist or returning an existing one if
+     * it is registered already in the DB. When creating the user, it also attached a specific role
+     *
+
+     * @return the existing/created {@link User}
+     */
+    private void updateUserData(User user, ProfileDTO profileDTO){
+        if(profileDTO.getFirstName() != null){
+            user.setFirstName(profileDTO.getFirstName());
+        }
+        if(profileDTO.getLastName() != null){
+            user.setLastName(profileDTO.getLastName());
+        }
+        if(profileDTO.getEmail() != null){
+            user.setLastName(profileDTO.getLastName());
+        }
+        if(profileDTO.getPhone() != null){
+            user.setPhone(profileDTO.getPhone());
+        }
+        repository.save(user);
+    }
+
+    /**
+     * Update the profile of a user. Checks that the new email dosn¿e exists.
+     *
+     * @param profileDTO first name of the {@link User} to be created (if it does not exist)
+     * @return the existing/created {@link User}
+     */
+    public void updateProfileData(ProfileDTO profileDTO, String userEmail) throws CoreApiException{
+        if(!userEmail.equals(profileDTO.getEmail())){
+            if(repository.findByEmail(profileDTO.getEmail()).isPresent()) {
+                throw CoreApiException.objectAlreadyExists("User with email: " + profileDTO.getEmail() + " already exists.");
+            }
+        }
+
+        Optional<User> maybeUser = repository.findByExternalId(profileDTO.getExternalId());
+        if(maybeUser.isPresent()){
+            updateUserData(maybeUser.get(), profileDTO);
+        }else{
+            throw CoreApiException.objectNotFound("User with external id: " + profileDTO.getExternalId() + " not found.");
+        }
     }
 }
