@@ -25,6 +25,7 @@ public class ProfileDTO implements DtoAble<ProfileDTO> {
         profileDTO.setPhone(user.getPhone());
         profileDTO.setFirstName(user.getFirstName());
         profileDTO.setLastName(user.getLastName());
+        profileDTO.setCountry(user.getCountry());
         return profileDTO;
     }
 }

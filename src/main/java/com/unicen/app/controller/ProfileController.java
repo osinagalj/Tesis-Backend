@@ -42,9 +42,8 @@ public class ProfileController extends GenericController<User, ProfileDTO> {
     @PutMapping
     public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> update(@RequestBody ProfileDTO dto) {
         GenericAuthenticationToken authentication = (GenericAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-
         service.updateProfileData(dto, authentication.getUsername());
-            return ok();
+        return ok();
     }
 
 }

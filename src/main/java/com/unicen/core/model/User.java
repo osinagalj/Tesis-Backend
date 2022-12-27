@@ -29,6 +29,8 @@ public class User extends AuditableModel<User> {
     @BatchSize(size = 20) private Set<AccessRole> roles = new HashSet<>();
     private Date lastLogin;
 
+    private String country;
+
     public User() {
         disable();
     }

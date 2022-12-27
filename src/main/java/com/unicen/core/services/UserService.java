@@ -256,17 +256,23 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         if(profileDTO.getLastName() != null){
             user.setLastName(profileDTO.getLastName());
         }
-        if(profileDTO.getEmail() != null){
-            user.setLastName(profileDTO.getLastName());
-        }
+
         if(profileDTO.getPhone() != null){
             user.setPhone(profileDTO.getPhone());
+        }
+
+        if(profileDTO.getCountry() != null){
+            user.setCountry(profileDTO.getCountry());
+        }
+
+        if(profileDTO.getEmail() != null){
+            user.setLastName(profileDTO.getLastName()); // TODO check email
         }
         repository.save(user);
     }
 
     /**
-     * Update the profile of a user. Checks that the new email dosn¿e exists.
+     * Update the profile of a user. Checks that the new email doesn't exist.
      *
      * @param profileDTO first name of the {@link User} to be created (if it does not exist)
      * @return the existing/created {@link User}
