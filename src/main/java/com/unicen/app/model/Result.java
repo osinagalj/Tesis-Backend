@@ -15,6 +15,7 @@ import javax.persistence.Table;
 @Setter
 @Table(name = "image")
 public class Result extends AuditableModel<Image> {
+
     @Column(name = "width")
     private int width;
     @Column(name = "height")

@@ -58,7 +58,7 @@ public class AuthenticationServiceFilter extends CustomBearerTokenAuthentication
     protected Authentication getAuthorizationFromToken(String token) {
         if(getEnviromentPropertiesService().isDevEnvironment() ){
             if(TOKEN_DEV.equals(token)){
-                User userUser = EntitiesDrawer.adminUser();
+                User userUser = EntitiesDrawer.getAdminUser();
                 token = getAuthenticationService().loginUsingPassword(userUser.getEmail(), "password").getToken();
                 LOGGER.info("session token for dev environment: {}", token);
             }

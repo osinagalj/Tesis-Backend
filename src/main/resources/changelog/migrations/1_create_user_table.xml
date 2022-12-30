@@ -29,6 +29,9 @@
       <column  name="phone"           type="varchar(255)" />
       <column  name="country"         type="varchar(255)" />
 
+      <column  name="image_id"     type="${type.id}">
+        <constraints nullable="true" foreignKeyName="FK_${table.name}__image_id" referencedTableName="image" referencedColumnNames="id" deleteCascade="true"/>
+      </column>
       <column  name="last_login" type="TIMESTAMP"> </column>
 
     </createTable>  

@@ -1,9 +1,9 @@
 package com.unicen.app.model;
 
 import com.unicen.core.model.AuditableModel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import com.unicen.core.model.User;
+import lombok.*;
+
 import javax.persistence.*;
 
 /**
@@ -11,9 +11,12 @@ import javax.persistence.*;
  */
 @Entity
 @Getter
-@Setter
 @Table(name = "image")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Image extends AuditableModel<Image> {
+    @Column(name = "name")
+    private String name;
     @Column(name = "width")
     private int width;
     @Column(name = "height")
@@ -25,4 +28,12 @@ public class Image extends AuditableModel<Image> {
     private String type;
     @Column(name = "description")
     private String description;
+
+    @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private User user;
+
+   /* @Transient*/
+    @Lob
+    @Column(name = "image", length = 1000)
+    private byte[] imageData;
 }

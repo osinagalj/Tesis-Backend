@@ -1,5 +1,6 @@
 package com.unicen.core.services;
 
+import com.unicen.app.model.Image;
 import com.unicen.core.spring.lightweightcontainer.GlobalApplicationContext;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.model.User;
@@ -38,6 +39,10 @@ public class EntitiesDrawer {
         user.getRoles().clear();
         user.getRoles().add(adminRole());
         return getUserService().save(user);
+    }
+
+    public static User getAdminUser(){
+        return getUserService().getByEmail("dev@gmail.com");
     }
 
     public static User newUser(String name, String lastName, String email, String pass) {

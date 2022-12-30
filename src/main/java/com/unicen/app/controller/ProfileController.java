@@ -14,6 +14,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/profile")
@@ -45,5 +48,14 @@ public class ProfileController extends GenericController<User, ProfileDTO> {
         service.updateProfileData(dto, authentication.getUsername());
         return ok();
     }
+
+    @PostMapping("/upload-image")
+    @ResponseBody
+    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage( @RequestParam("userExternalId") String userExternalId, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+        service.updatePictureOfUser(userExternalId, multipartFile);
+        return ok();
+    }
+
+
 
 }

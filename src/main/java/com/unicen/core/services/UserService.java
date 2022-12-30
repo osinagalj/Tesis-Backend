@@ -1,6 +1,8 @@
 package com.unicen.core.services;
 
 import com.unicen.app.dto.ProfileDTO;
+import com.unicen.app.model.Image;
+import com.unicen.app.service.ImageService;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.model.AuthenticationToken;
@@ -14,12 +16,14 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserService extends PublicObjectCrudService<User, UserRepository> {
@@ -27,6 +31,8 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     private final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserPasswordEncoder userPasswordEncoder;
+    private final ImageService imageService;
+
     private final AccessRoleService accessRoleService;
     private final AuthenticationTokenService authenticationTokenService;
 
@@ -36,12 +42,18 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
      */
     private String oneTimeAdminSecret;
 
-    public UserService(UserRepository repository, UserPasswordEncoder encoder, @Lazy AccessRoleService accessRoleService, AuthenticationTokenService authenticationTokenService) {
+    public UserService(UserRepository repository, UserPasswordEncoder encoder, ImageService imageService, @Lazy AccessRoleService accessRoleService, AuthenticationTokenService authenticationTokenService) {
         super(repository);
         this.userPasswordEncoder = encoder;
+        this.imageService = imageService;
         this.accessRoleService = accessRoleService;
         this.authenticationTokenService = authenticationTokenService;
         this.oneTimeAdminSecret = generateOneTimeAdminSecret();
+    }
+
+    @Transactional
+    public Optional<User> findUserWithPicture(String userExternalId) throws IOException {
+        return  repository.findByExternalId(userExternalId); //repository.findByExternalId(userExternalId);
     }
 
     @Override
@@ -52,6 +64,20 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         user.setAvatarUrl(updateDTO.getAvatarUrl());
         user.setEmail(updateDTO.getEmail());
         user.setDisabledAt(updateDTO.getDisabledAt());
+        user.setImage(updateDTO.getImage());
+    }
+
+    @Transactional
+    public void updatePictureOfUser(String userExternalId, MultipartFile file) throws IOException {
+        //TODO change this
+        Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
+        User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
+
+        Image image = new Image("Image from test 2",1,11,"U","T","D",user, file.getBytes());
+        image.ensureExternalId();
+        user.setImage(imageService.save(image));
+        this.update(user.getId(), user);
+        System.out.println("finish updating user pict..");
     }
 
     /**
@@ -277,6 +303,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
      * @param profileDTO first name of the {@link User} to be created (if it does not exist)
      * @return the existing/created {@link User}
      */
+    @Transactional
     public void updateProfileData(ProfileDTO profileDTO, String userEmail) throws CoreApiException{
         if(!userEmail.equals(profileDTO.getEmail())){
             if(repository.findByEmail(profileDTO.getEmail()).isPresent()) {

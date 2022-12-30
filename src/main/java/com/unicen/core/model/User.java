@@ -1,9 +1,13 @@
 package com.unicen.core.model;
 
 
+import com.unicen.app.model.Image;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +20,8 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+
 @Table(name = "core_user")
 public class User extends AuditableModel<User> {
     private String firstName;
@@ -30,6 +36,14 @@ public class User extends AuditableModel<User> {
     private Date lastLogin;
 
     private String country;
+
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "image_id") //The FK is in Image
+    private Image image;
+/*    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private Image image;*/
 
     public User() {
         disable();
