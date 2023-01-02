@@ -37,13 +37,9 @@ public class User extends AuditableModel<User> {
 
     private String country;
 
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "image_id") //The FK is in Image
+    @OneToOne
+    @JoinColumn(name = "image_id", nullable = true) //The FK is in Image
     private Image image;
-/*    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "image_id", referencedColumnName = "id")
-    private Image image;*/
 
     public User() {
         disable();

@@ -20,7 +20,8 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/profile")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+@PreAuthorize("permitAll")
+/*@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")*/
 public class ProfileController extends GenericController<User, ProfileDTO> {
 
     @Override

@@ -106,7 +106,7 @@ public class ImageController extends GenericController<Image, ImageDTO> {
         MediaType contentType = MediaType.IMAGE_JPEG ;
         InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
 
-       var user =  userService.findUserWithPicture(userExternalId);
+       var user =  userService.findByExternalIdAndFetchImageEagerly(userExternalId);
        // var a = service.findAll().stream().findFirst();
 
        if(user.isPresent()){

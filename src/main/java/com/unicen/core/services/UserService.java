@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.swing.text.html.Option;
 
 @Service
 public class UserService extends PublicObjectCrudService<User, UserRepository> {
@@ -51,9 +51,17 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         this.oneTimeAdminSecret = generateOneTimeAdminSecret();
     }
 
+/*
     @Transactional
     public Optional<User> findUserWithPicture(String userExternalId) throws IOException {
         return  repository.findByExternalId(userExternalId); //repository.findByExternalId(userExternalId);
+    }
+*/
+
+    @Transactional
+    public Optional<User> findByExternalIdAndFetchImageEagerly(String userExternalId) throws IOException {
+        return  repository.findByExternalIdAndFetchImageEagerly(userExternalId);   //new ArrayList<>();
+
     }
 
     @Override
