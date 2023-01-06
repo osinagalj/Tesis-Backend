@@ -1,4 +1,5 @@
-env: '${ENV:dev}'
+env: '${ENV:prod}'
+
 spring:
   profiles:
     active: '${env}'
@@ -38,3 +39,16 @@ logging:
 token:
   dev: '${TOKEN_DEV:abcd}'
 
+info:
+  application:
+    name: spring-back-tesis
+    description: Testing.
+    author: Lautaro Osinaga
+    version: '@0.1@'
+
+
+PROD_DB_HOST: containers-us-west-195.railway.app
+PROD_DB_PORT: 7107
+PROD_DB_NAME: railway
+PROD_DB_PASSWORD: yMXKKFdJhiNwHyD98gcO
+PROD_DB_USERNAME: postgres

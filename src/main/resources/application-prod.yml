@@ -4,13 +4,13 @@ application:
     base-url: '${APP_FRONT_BASE_URL:https://tesis-frontend-material-kit.vercel.app}'
   validation-base-url: '${application.front.base-url}/auth/validate'
 
+
+
 spring:
   datasource:
-    url: 'jdbc:postgresql://dpg-ces55aen6mphf4o7e8lg-a.oregon-postgres.render.com:5432/tesis_database'
-    username: tesis_database_user
-    password: BjMReqGdCIeW7IDZ8N1rNozp7TFfbV4Y
-    driverClassName: org.postgresql.Driver
-    hikari:
-      maximumPoolSize: '${HIKARI_MAXIMUM_POOL_SIZE:20}'
+    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PASSWORD}
+    name: spring-blog
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
