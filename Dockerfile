@@ -3,15 +3,18 @@
 
 # For Java 11, try this
 FROM adoptopenjdk/openjdk11:alpine-jre
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app.jar"]
 
 # Refer to Maven build -> finalName
-ARG JAR_FILE=target/spring-boot-web.jar
+#ARG JAR_FILE=target/spring-boot-web.jar
 
 # cd /opt/app
-WORKDIR /src/app
+# WORKDIR /src/app
 
 # cp target/spring-boot-web.jar /opt/app/app.jar
-COPY ${JAR_FILE} app.jar
+#COPY ${JAR_FILE} app.jar
 
 # java -jar /opt/app/app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
