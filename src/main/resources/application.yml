@@ -1,8 +1,6 @@
-env: '${ENV:prod}'
-
 spring:
   profiles:
-    active: '${env}'
+    active: prod
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -21,6 +19,14 @@ spring:
           auth: true
           starttls:
             enable: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
 application:
   validation:
     base-url: '${application.base-url}/auth/validate'
@@ -47,8 +53,8 @@ info:
     version: '@0.1@'
 
 
-PROD_DB_HOST: containers-us-west-195.railway.app
-PROD_DB_PORT: 7107
+PROD_DB_HOST: containers-us-west-57.railway.app
+PROD_DB_PORT: 5510
 PROD_DB_NAME: railway
-PROD_DB_PASSWORD: yMXKKFdJhiNwHyD98gcO
+PROD_DB_PASSWORD: GR9wbLxqlC80M6KNbDdX
 PROD_DB_USERNAME: postgres
