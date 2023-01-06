@@ -19,6 +19,17 @@ spring:
           auth: true
           starttls:
             enable: true
+
+application:
+  validation:
+    base-url: '${application.base-url}/auth/validate'
+    forgot-password: '${application.base-url}/auth/validate-forgot-password'
+  from-email: no-reply@ensolvers.com
+  sign-up:
+    enabled: '${SIGN_UP_ENABLED:true}'
+
+
+
 management:
   endpoints:
     web:
@@ -27,13 +38,9 @@ management:
   info:
     env:
       enabled: true
-application:
-  validation:
-    base-url: '${application.base-url}/auth/validate'
-    forgot-password: '${application.base-url}/auth/validate-forgot-password'
-  from-email: no-reply@ensolvers.com
-  sign-up:
-    enabled: '${SIGN_UP_ENABLED:true}'
+
+
+
 ensolvers:
   security:
     enabled: false

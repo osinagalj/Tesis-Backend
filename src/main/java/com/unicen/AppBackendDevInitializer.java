@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-@Profile({"dev", "qa"})
+@Profile({"dev", "prod"})
 public class AppBackendDevInitializer {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
