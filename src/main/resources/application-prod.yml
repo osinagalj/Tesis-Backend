@@ -1,5 +1,5 @@
 application:
-  base-url: 'http://lo-tesis-backend.herokuapp.com'
+  base-url: 'http://tesis-backend-production.up.railway.app'
   front:
     base-url: '${APP_FRONT_BASE_URL:https://tesis-frontend-material-kit.vercel.app}'
   validation-base-url: '${application.front.base-url}/auth/validate'
