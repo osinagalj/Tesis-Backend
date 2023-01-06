@@ -2,11 +2,10 @@
 # FROM openjdk:8-jdk-alpine
 
 # For Java 11, try this
-FROM adoptopenjdk/openjdk11:alpine-jre
+FROM openjdk:11
 ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY ${JAR_FILE} app-tesis.jar
+ENTRYPOINT ["java","-jar","app-tesis.jar"]
 
 # Refer to Maven build -> finalName
 #ARG JAR_FILE=target/spring-boot-web.jar
