@@ -4,6 +4,7 @@
 # For Java 11, try this
 FROM openjdk:11
 ARG JAR_FILE=target/*.jar
+WORKDIR /usr/src/app-tesis
 COPY ${JAR_FILE} app-tesis.jar
 ENTRYPOINT ["java","-jar","app-tesis.jar"]
 
