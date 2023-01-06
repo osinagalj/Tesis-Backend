@@ -331,7 +331,7 @@
                         </executions>
                     </plugin>
                 </plugins>
-                <finalName>spring-boot-docker</finalName>
+                <finalName>spring-boot-web</finalName>
             </build>
         </profile>
     </profiles>
