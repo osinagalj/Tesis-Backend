@@ -49,4 +49,11 @@ class ImageServiceTest {
         var a = userService.findByExternalIdAndFetchImageEagerly("831c8949bac244149f46c10161794bce");
         System.out.println("finish..");
     }
+
+    @Test
+    public void getUserWithoutPicture() throws IOException {
+        System.out.println("starting..");
+        var a = userService.getByExternalId("831c8949bac244149f46c10161794bce");
+        System.out.println("finish..");
+    }
 }
