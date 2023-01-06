@@ -1,0 +1,27 @@
+server:
+  port: '8080'
+application:
+  base-url: '${APP_BASE_URL:http://localhost:8080}'
+  front:
+    base-url: '${APP_FRONT_BASE_URL:http://localhost:3000}'
+  validation-base-url: '${application.front.base-url}/auth/validate'
+#PostgresSQL
+spring:
+  datasource:
+    url: 'jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:tesis}'
+    username: '${DB_USERNAME:postgres}'
+    password: '${DB_PASSWORD:postgres}'
+    max-active: '1000'
+    driverClassName: org.postgresql.Driver
+    hikari:
+      maximumPoolSize: '${HIKARI_MAXIMUM_POOL_SIZE:20}'
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
+
+#spring.datasource.url=jdbc:h2:mem:testdb
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=sa
+#spring.datasource.password=password
+#spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
