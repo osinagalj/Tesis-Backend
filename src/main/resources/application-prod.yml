@@ -1,5 +1,5 @@
 application:
-  base-url: 'http://tesis-backend-production.up.railway.app'
+  base-url: 'https://tesis-backend-production.up.railway.app'
   front:
     base-url: 'https://tesis-frontend-material-kit.vercel.app'
   validation-base-url: '${application.front.base-url}/auth/validate'
