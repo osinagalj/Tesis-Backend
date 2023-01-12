@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER
@@ -60,4 +60,9 @@ info:
     version: '@0.1@'
 
 
+PROD_DB_HOST: containers-us-west-57.railway.app
+PROD_DB_PORT: 5510
+PROD_DB_NAME: railway
+PROD_DB_PASSWORD: GR9wbLxqlC80M6KNbDdX
+PROD_DB_USERNAME: postgres
 
