@@ -4,12 +4,6 @@ application:
     base-url: 'https://tesis-frontend-material-kit.vercel.app'
   validation-base-url: '${application.front.base-url}/auth/validate'
 
-PROD_DB_HOST: containers-us-west-57.railway.app
-PROD_DB_PORT: 5510
-PROD_DB_NAME: railway
-PROD_DB_PASSWORD: GR9wbLxqlC80M6KNbDdX
-PROD_DB_USERNAME: postgres
-
 spring:
   datasource:
     url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
