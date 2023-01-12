@@ -1,10 +1,8 @@
 application:
-  base-url: 'http://tesis-backend-production.up.railway.app'
+  base-url: 'https://tesis-backend-production.up.railway.app'
   front:
     base-url: 'https://tesis-frontend-material-kit.vercel.app'
   validation-base-url: '${application.front.base-url}/auth/validate'
-
-
 
 spring:
   datasource:
@@ -14,3 +12,4 @@ spring:
     name: spring-blog
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+
