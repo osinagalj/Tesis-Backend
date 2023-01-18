@@ -2,6 +2,7 @@ package com.unicen.app.controller;
 
 import com.unicen.app.dto.ImageDTO;
 import com.unicen.app.dto.ProfileDTO;
+import com.unicen.app.model.ImageType;
 import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.model.GenericSuccessResponse;
@@ -52,8 +53,8 @@ public class ProfileController extends GenericController<User, ProfileDTO> {
 
     @PostMapping("/upload-image")
     @ResponseBody
-    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage( @RequestParam("userExternalId") String userExternalId, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        service.updatePictureOfUser(userExternalId, multipartFile);
+    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("userExternalId") String userExternalId, @RequestParam("type") String type, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+        service.updatePictureOfUser(userExternalId,ImageType.getType(type), multipartFile);
         return ok();
     }
 

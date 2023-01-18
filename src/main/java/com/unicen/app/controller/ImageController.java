@@ -87,18 +87,6 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     }
 
 
-    @PostMapping("/upload3")
-    public ResponseEntity<ApiResultDTO<ImageDTO>> uploadImage3(@RequestParam String userExternalId) throws IOException {
-
-        return uniqueResult(new Image("A",1,11,"U","T","D",null, null));
-    }
-
-    @PostMapping("/upload2")
-    public ResponseEntity<ApiResultDTO<ImageDTO>> uploadImage2(@RequestParam("userExternalId") String userExternalId, @RequestParam("file") MultipartFile multipartFile)  {
-
-        return uniqueResult(new Image("A",1,11,"U","T","D",null, null));
-    }
-
     @GetMapping("/getimage")
     @ResponseBody
     public ResponseEntity<Resource> getImageDynamicType( @RequestParam("userExternalId") String userExternalId) throws IOException {
