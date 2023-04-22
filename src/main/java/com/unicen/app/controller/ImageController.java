@@ -2,16 +2,21 @@ package com.unicen.app.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unicen.app.dto.ImageCustomDTO;
 import com.unicen.app.dto.ImageDTO;
 import com.unicen.app.dto.Json;
 import com.unicen.app.model.Image;
+import com.unicen.app.model.ImageType;
 import com.unicen.app.service.ImageService;
+import com.unicen.core.controller.ControllerExceptionHandler;
 import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
+import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.GenericSuccessResponse;
 import com.unicen.core.model.User;
 import com.unicen.core.services.UserService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
@@ -34,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.core.io.Resource;
 @Controller
@@ -104,11 +110,63 @@ public class ImageController extends GenericController<Image, ImageDTO> {
                return ResponseEntity.ok()
                        .contentType(contentType)
                        .body(new InputStreamResource(is));
+           }else{
+               throw CoreApiException.objectNotFound("Picture for user: " + user.get().getEmail() + "hasn't been set");
            }
+       }else {
+           throw CoreApiException.objectNotFound("User: " + user.get().getEmail() + "not exists");
        }
+    }
+
+    @GetMapping("/getCustomImages")
+    @ResponseBody
+    public ResponseEntity<ApiResultDTO<Page<ImageDTO>>> getImagesForUser( @RequestParam("userExternalId") String userExternalId) throws IOException {
+        var user =  userService.findByExternalId(userExternalId);
+        if(user.isPresent()){
+                return pageResult(service.findPageImages(0, 5,user.get(), Sort.Direction.DESC, "createdAt"));
+        }else {
+            throw CoreApiException.objectNotFound("User: " + user.get().getEmail() + "not exists");
+        }
+    }
+
+
+    @GetMapping("/getResource")
+    @ResponseBody
+    public ResponseEntity<Resource> getImageResource(@RequestParam("externalId") String externalId) throws IOException {
+        //working
+        MediaType contentType = MediaType.IMAGE_JPEG;
+        InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
+
+        var image =  service.findByExternalIdAndFetchImageEagerly(externalId);
+        // var a = service.findAll().stream().findFirst();
+        if(!image.isPresent()){
+            throw CoreApiException.objectNotFound("Resource : " + externalId + " not exists");
+
+        }
+        InputStream is = new ByteArrayInputStream(image.get().getImageData());
+
         return ResponseEntity.ok()
                 .contentType(contentType)
-                .body(new InputStreamResource(in));
+                        .body(new InputStreamResource(is));
+
+
+    }
+
+
+
+    @PostMapping("/upload-image")
+    @ResponseBody
+    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("userExternalId") String userExternalId, @RequestParam("type") String type, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+
+        //TODO change this
+
+        Optional<User> user = userService.findByExternalId(userExternalId); //repository.findByExternalId(userExternalId);
+        if(user.isPresent()){
+            service.saveImage(user.get(), ImageType.getType(type), multipartFile);
+            return null;
+        }
+
+        return ok();
     }
 
 

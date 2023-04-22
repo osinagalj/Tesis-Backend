@@ -25,8 +25,7 @@
       <column  name="height"      type="int">            <constraints nullable="false" /> </column>
       <column  name="name"        type="varchar(255)">   <constraints nullable="false" /> </column>
       <column  name="description" type="varchar(255)">                                    </column>
-      <column  name="image"       type="blob">                                            </column>
-
+      <column  name="image_data"       type="blob">                                            </column>
     </createTable>
   </changeSet>
 </databaseChangeLog>

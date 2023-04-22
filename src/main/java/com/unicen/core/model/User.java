@@ -10,9 +10,7 @@ import org.hibernate.annotations.BatchSize;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Represents a user in the platform
@@ -40,6 +38,15 @@ public class User extends AuditableModel<User> {
     @OneToOne
     @JoinColumn(name = "image_id", nullable = true) //The FK is in Image
     private Image image;
+
+/*
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+*/
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private List<Image> imagesList;
 
     public User() {
         disable();

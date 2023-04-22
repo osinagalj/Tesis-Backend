@@ -61,7 +61,6 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     @Transactional
     public Optional<User> findByExternalIdAndFetchImageEagerly(String userExternalId) throws IOException {
         return  repository.findByExternalIdAndFetchImageEagerly(userExternalId);   //new ArrayList<>();
-
     }
 
     @Override
@@ -81,7 +80,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
         User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
 
-        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes());
+        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes(), user);
         image.ensureExternalId();
         user.setImage(imageService.save(image));
         this.update(user.getId(), user);

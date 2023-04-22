@@ -11,6 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @Getter
+@Setter
 @Table(name = "image")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,8 +33,15 @@ public class Image extends AuditableModel<Image> {
     @OneToOne(mappedBy = "image", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
 
+
+
    /* @Transient*/
     @Lob
-    @Column(name = "image", length = 1000)
+    @Column(name = "image_data", length = 1000)
     private byte[] imageData;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
 }
