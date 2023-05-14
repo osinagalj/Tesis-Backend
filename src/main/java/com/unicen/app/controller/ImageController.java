@@ -120,10 +120,11 @@ public class ImageController extends GenericController<Image, ImageDTO> {
 
     @GetMapping("/getCustomImages")
     @ResponseBody
-    public ResponseEntity<ApiResultDTO<Page<ImageDTO>>> getImagesForUser( @RequestParam("userExternalId") String userExternalId) throws IOException {
+    public ResponseEntity<ApiResultDTO<Page<ImageDTO>>> getImagesForUser( @RequestParam("userExternalId") String userExternalId, @RequestParam(defaultValue = "0") Integer page,
+                                                                          @RequestParam(defaultValue = "5") Integer pageSize) throws IOException {
         var user =  userService.findByExternalId(userExternalId);
         if(user.isPresent()){
-                return pageResult(service.findPageImages(0, 5,user.get(), Sort.Direction.DESC, "createdAt"));
+                return pageResult(service.findPageImages(page, pageSize,user.get(), Sort.Direction.DESC, "createdAt"));
         }else {
             throw CoreApiException.objectNotFound("User: " + user.get().getEmail() + "not exists");
         }
