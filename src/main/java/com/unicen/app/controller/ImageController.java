@@ -171,18 +171,4 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     }
 
 
-/*
-    @PostMapping("/upload")
-    @ResponseBody
-    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage( @RequestParam("userExternalId") String userExternalId, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-
-        return ok();
-    }
-*/
-
-/*    @PostMapping("/upload")
-    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage( @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        service.saveImage(null, multipartFile);
-        return ok();
-    }*/
 }

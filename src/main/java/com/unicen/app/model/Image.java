@@ -3,8 +3,10 @@ package com.unicen.app.model;
 import com.unicen.core.model.AuditableModel;
 import com.unicen.core.model.User;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Represents a user in the platform
@@ -37,11 +39,16 @@ public class Image extends AuditableModel<Image> {
 
    /* @Transient*/
     @Lob
+    @Type(type = "org.hibernate.type.ImageType")
     @Column(name = "image_data", length = 1000)
     private byte[] imageData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private List<ImageResult> imagesList;
 
 }

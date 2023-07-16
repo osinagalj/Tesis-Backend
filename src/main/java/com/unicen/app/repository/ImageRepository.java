@@ -15,13 +15,6 @@ import java.util.Optional;
 
 @Repository
 public interface ImageRepository extends PublicObjectRepository<Image, Long> {
-
-/*
-    @Query("Select u FROM User u JOIN FETCH u.image where u.externalId  = :userExternalId")
-*/
-/*@Query("SELECT i FROM Image i ")
-    Page<Image> findImageFromUser( Pageable pageable);*/
-
     Page<Image> findAll(Specification<Image> spec,Pageable pageable);
 
     @Query("Select i FROM Image i where i.externalId  = :externalId")

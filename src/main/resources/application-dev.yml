@@ -8,7 +8,7 @@ application:
 #PostgresSQL
 spring:
   datasource:
-    url: 'jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:tesis4}'
+    url: 'jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:test}'
     username: '${DB_USERNAME:postgres}'
     password: '${DB_PASSWORD:postgres}'
     max-active: '1000'

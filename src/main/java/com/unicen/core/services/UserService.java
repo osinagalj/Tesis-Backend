@@ -80,7 +80,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
         User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
 
-        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes(), user);
+        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());
         image.ensureExternalId();
         user.setImage(imageService.save(image));
         this.update(user.getId(), user);

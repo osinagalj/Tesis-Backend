@@ -3,6 +3,7 @@ package com.unicen.core.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.unicen.core.dto.ApiPageResultDTO;
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.model.DtoAble;
 import com.unicen.core.model.GenericSuccessResponse;

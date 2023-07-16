@@ -29,7 +29,7 @@ class ImageServiceTest {
     public void updatePictureOfUser() {
         User user = EntitiesDrawer.getAdminUser();
 
-        Image image = new Image("Image from test 2",1,11,"U","T","D",null, null);
+        Image image = new Image("Image from test 2",1,11,"U","T","D",null, null, null);
         image.ensureExternalId();
         user.setImage(imageService.save(image));
         userService.update(user.getId(), user);
@@ -46,14 +46,14 @@ class ImageServiceTest {
     @Test
     public void getUserWithPicture() throws IOException {
         System.out.println("starting..");
-        var a = userService.findByExternalIdAndFetchImageEagerly("831c8949bac244149f46c10161794bce");
+        var a = userService.findByExternalIdAndFetchImageEagerly("f82b162417214c838c007fe33b9a89ef");
         System.out.println("finish..");
     }
 
     @Test
     public void getUserWithoutPicture() throws IOException {
         System.out.println("starting..");
-        var a = userService.getByExternalId("831c8949bac244149f46c10161794bce");
+        var a = userService.getByExternalId("f82b162417214c838c007fe33b9a89ef");
         System.out.println("finish..");
     }
 }

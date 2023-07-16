@@ -19,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -52,13 +56,14 @@ public class ImageService extends PublicObjectCrudService<Image, ImageRepository
     public void saveImage(User user, String type, MultipartFile file) throws IOException {
 
 
-        Image image = new Image("Image from test 2",1,11,"U",type,"D",user,file.getBytes(), user);
+        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());
         image.ensureExternalId();
         repository.save(image);
         /*user.setImage(imageService.save(image));*/
         /*this.update(user.getId(), user);*/
         System.out.println("finish updating user pict..");
     }
+
 
     @Transactional(readOnly = true)
     public Page<Image> findPageImages(int page, int pageSize,User user, Sort.Direction order, String... propertiesToOrder) {
@@ -77,6 +82,9 @@ public class ImageService extends PublicObjectCrudService<Image, ImageRepository
         var imagePage = repository.findByExternalId(externalId);
         return  repository.findByExternalIdAndFetchImageEagerly(externalId);   //new ArrayList<>();
     }
+
+
+
 
 
 }
