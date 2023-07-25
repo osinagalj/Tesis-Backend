@@ -63,23 +63,14 @@ public class ImageResultService extends PublicObjectCrudService<ImageResult, Ima
         return  repository.findByExternalIdAndFetchImageEagerly(externalId);   //new ArrayList<>();
     }
 
-    @Transactional(readOnly = true)
-    public Integer findTotalPages(Long externalId) {
-        Sort sortBy = Sort.by("createdAt").ascending();
-        Specification<ImageResult> spec = (root, query, cb) -> cb.equal(root.get("originalImageId"), externalId);
-        // Obtiene la primera página de imágenes del repositorio
-         var imagePage = repository.getTotalElements(externalId + "");
-        System.out.println("image page: " + imagePage);
-
-        return 20;
-    }
 
     @Transactional(readOnly = true)
-    public Page<ImageResult> findPageImages(Long externalId, int page, int pageSize,User user, Sort.Direction order, String... propertiesToOrder) {
-        Sort sortBy = Sort.by("createdAt").ascending();
+    public Page<ImageResult> findPageImages(Long externalId, int page, int pageSize, Sort.Direction order, String... propertiesToOrder) {
+        Sort sortBy = Sort.by(order, propertiesToOrder);
         Specification<ImageResult> spec = (root, query, cb) -> cb.equal(root.get("originalImageId"), externalId);
         // Obtiene la primera página de imágenes del repositorio
-        Page<ImageResult> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize));
+        Page<ImageResult> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize, sortBy));
+
         return imagePage;
     }
 

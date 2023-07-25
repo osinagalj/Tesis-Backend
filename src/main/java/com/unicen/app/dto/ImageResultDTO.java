@@ -10,4 +10,7 @@ import lombok.*;
 public class ImageResultDTO implements DtoAble<ImageResultDTO> {
     private String externalId;
     private String type;
+    private String algorithm = "default alg";
+    private Integer ratio = 10;
+    private String name;
 }

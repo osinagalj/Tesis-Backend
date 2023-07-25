@@ -13,4 +13,5 @@ public class ProcessedImage {
     private byte[] image;
     private int ratio;
     private String algorithm;
+    private String name;
 }

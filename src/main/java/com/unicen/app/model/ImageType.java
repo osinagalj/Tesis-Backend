@@ -11,7 +11,13 @@ public enum ImageType {
             return "JPEG";
         }
     },
-    PNG{
+    BMP {
+        @Override
+        public String getString(){
+            return "BMP";
+        }
+    },
+    PNG {
         @Override
         public String getString(){
             return "PNG";

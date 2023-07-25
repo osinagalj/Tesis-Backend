@@ -66,7 +66,7 @@ public class ImageResultController extends GenericController<ImageResult, ImageR
         GenericAuthenticationToken authentication = (GenericAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getById((long)authentication.getPrincipal());
         Image image = imageService.getByExternalId(imageExternalId);
-        return pageResult(service.findPageImages(image.getId(), page, pageSize,user , Sort.Direction.DESC, "createdAt"));
+        return pageResult(service.findPageImages(image.getId(), page, pageSize, Sort.Direction.DESC, "createdAt"));
 
     }
 
@@ -91,10 +91,7 @@ public class ImageResultController extends GenericController<ImageResult, ImageR
         return ResponseEntity.ok()
                 .contentType(contentType)
                         .body(new InputStreamResource(is));
-
-
     }
-
 
 
 

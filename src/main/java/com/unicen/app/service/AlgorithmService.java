@@ -2,30 +2,20 @@ package com.unicen.app.service;
 
 import com.unicen.app.dto.ProcessedImage;
 import com.unicen.app.model.Algorithm;
-import com.unicen.app.model.Image;
-import com.unicen.app.repository.ImageRepository;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.User;
-import com.unicen.core.services.PublicObjectCrudService;
 import com.unicen.core.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.awscore.util.SignerOverrideUtils;
-
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+
 
 @Service
 public class AlgorithmService  {
@@ -40,21 +30,16 @@ public class AlgorithmService  {
     ImageResultService imageResultService;
 
     public void process (Algorithm algorithm,String resourceExternalId, Integer ratioFrom, Integer ratioTo, User user) throws IOException {
-
         Integer ratio = ratioFrom;
-
-
         var image =  imageService.findByExternalIdAndFetchImageEagerly(resourceExternalId);
-        // var a = service.findAll().stream().findFirst();
         if(!image.isPresent()){
             throw CoreApiException.objectNotFound("Resource : " + resourceExternalId + " not exists");
         }
         InputStream is = new ByteArrayInputStream(image.get().getImageData());
 
-
         while(ratio < ratioTo + 1){
 
-            List<ProcessedImage> response = algorithm.process(resourceExternalId, is, ratio);
+            List<ProcessedImage> response = algorithm.process(resourceExternalId, is, ratio, image.get().getName());
             is.reset();
             response.forEach(
                     r -> {
@@ -64,7 +49,7 @@ public class AlgorithmService  {
                         System.out.println(r.getOriginalExternalId());
 
                         try {
-                            imageResultService.saveImage("Imagen prcesada xd" + Math.random(),r.getAlgorithm(),r.getRatio(),"png",r.getImage(),image.get());
+                            imageResultService.saveImage(r.getName(), r.getAlgorithm(), r.getRatio(),"png",r.getImage(), image.get());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -74,26 +59,23 @@ public class AlgorithmService  {
         }
     }
 
-    public static ProcessedImage algorithmLee (InputStream image, Integer ratio, String originalExternalId) throws IOException {
+    public static ProcessedImage algorithmLee (InputStream image, Integer ratio, String originalExternalId, String name) throws IOException {
        //Aplica algoritmo de lee
        //Guarda la imagen (asociada al resourceExternalid original)
-
         Color color = new Color(255, 255, 255); //white
+
         ProcessedImage result = new ProcessedImage();
         result.setRatio(ratio);
         result.setOriginalExternalId(originalExternalId);
         result.setImage(removeHalfImage(image, color));
         result.setAlgorithm(Algorithm.LEE.getString());
-
+        result.setName(name);
         return result;
-
-
     }
 
-    public static ProcessedImage algorithmMedian (InputStream image, Integer ratio, String originalExternalId) throws IOException {
+    public static ProcessedImage algorithmMedian (InputStream image, Integer ratio, String originalExternalId, String name) throws IOException {
         //Aplica algoritmo de Median
         //Guarda la imagen (asociada al resourceExternalid original)
-
         Color color = new Color(0, 0, 0); //black
 
         ProcessedImage result = new ProcessedImage();
@@ -101,13 +83,11 @@ public class AlgorithmService  {
         result.setOriginalExternalId(originalExternalId);
         result.setImage(removeHalfImage(image, color));
         result.setAlgorithm(Algorithm.MEDIAN.getString());
-
+        result.setName(name);
         return result;
-
-
     }
 
-    public static ProcessedImage algorithmRobustLee (InputStream image, Integer ratio, String originalExternalId) throws IOException {
+    public static ProcessedImage algorithmRobustLee (InputStream image, Integer ratio, String originalExternalId, String name) throws IOException {
         //Aplica algoritmo de lee
         //Guarda la imagen (asociada al resourceExternalid original)
         Color color = new Color(255, 0, 0); //black
@@ -117,19 +97,18 @@ public class AlgorithmService  {
         result.setOriginalExternalId(originalExternalId);
         result.setImage(removeHalfImage(image, color));
         result.setAlgorithm(Algorithm.ROBUST_LEE.getString());
-
+        result.setName(name);
         return result;
     }
-
 
 
     public  static byte[] removeHalfImage(InputStream imageStream, Color color) throws IOException {
         // Leer la imagen del InputStream
 
-        System.out.println("rEADING IMAGE" );
+        System.out.println("Reading image");
 
         BufferedImage image = ImageIO.read(imageStream);
-
+        var formats= ImageIO.getReaderFormatNames();
         // Obtener la anchura y altura de la imagen
         int width = image.getWidth();
         int height = image.getHeight();

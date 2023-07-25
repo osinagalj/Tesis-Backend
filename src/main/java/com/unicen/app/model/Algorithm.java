@@ -2,11 +2,6 @@ package com.unicen.app.model;
 
 import com.unicen.app.dto.ProcessedImage;
 import com.unicen.app.service.AlgorithmService;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -20,61 +15,50 @@ public enum Algorithm {
             return "LEE";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio) throws IOException {
-
-            List<ProcessedImage> list = Arrays.asList(AlgorithmService.algorithmLee(image, ratio, resourceExternalId));
-
-
-            return list;
-
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
+            return Arrays.asList(AlgorithmService.algorithmLee(image, ratio, resourceExternalId, name));
         }
     },
-    ROBUST_LEE{
+    ROBUST_LEE {
         @Override
         public String getString(){
             return "ROBUST_LEE";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio) throws IOException {
-            return Arrays.asList(AlgorithmService.algorithmRobustLee(image, ratio, resourceExternalId));
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
+            return Arrays.asList(AlgorithmService.algorithmRobustLee(image, ratio, resourceExternalId, name));
         }
     },
-    MEDIAN{
+    MEDIAN {
         @Override
         public String getString(){
             return "MEDIAN";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio) throws IOException {
-            return Arrays.asList(AlgorithmService.algorithmMedian(image, ratio, resourceExternalId));
-
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
+            return Arrays.asList(AlgorithmService.algorithmMedian(image, ratio, resourceExternalId, name));
         }
     },
-    ALL{
+    ALL {
         @Override
         public String getString(){
             return "ALL";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio) throws IOException {
-
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
             List<ProcessedImage> result = new ArrayList<>();
-
+            //Use functional programming
             for (Algorithm algorithm : Algorithm.values()) {
                 if (algorithm != Algorithm.ALL) {
-
-                    result.addAll( algorithm.process(resourceExternalId, image, ratio));
+                    result.addAll(algorithm.process(resourceExternalId, image, ratio, name));
                     image.reset();
-
                 }
             }
             return result;
         }
     };
 
-
     public abstract String getString();
-
-    public abstract List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio) throws IOException;
+    public abstract List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException;
 
 }

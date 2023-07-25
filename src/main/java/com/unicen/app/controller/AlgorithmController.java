@@ -2,8 +2,10 @@ package com.unicen.app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicen.app.dto.ImageDTO;
+import com.unicen.app.dto.ImageResultDTO;
 import com.unicen.app.model.Algorithm;
 import com.unicen.app.model.Image;
+import com.unicen.app.model.ImageResult;
 import com.unicen.app.model.ImageType;
 import com.unicen.app.service.AlgorithmService;
 import com.unicen.app.service.ImageService;
@@ -31,13 +33,19 @@ import java.util.Optional;
 @Controller
 @PreAuthorize("permitAll")
 @RequestMapping("/algorithm")
-public class AlgorithmController  {
+public class AlgorithmController extends GenericController<ImageResult, ImageResultDTO> {
 
+    @Override
+    protected Class<ImageResultDTO> getDTOClass() {
+        return ImageResultDTO.class;
+    }
+
+    @Override
+    protected Class<ImageResult> getObjectClass() {
+        return ImageResult.class;
+    }
 
     private ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    ImageService service;
 
     @Autowired
     AlgorithmService algorithmService;
@@ -47,11 +55,11 @@ public class AlgorithmController  {
 
     @PostMapping("/process")
     @ResponseBody
-    public String uploadImage(@RequestParam("resourceExternalId") String resourceExternalId,  @RequestParam("algorithm") Algorithm algorithm, @RequestParam("ratioFrom") Integer ratioFrom, @RequestParam("ratioTo") Integer ratioTo) throws IOException {
+    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("resourceExternalId") String resourceExternalId,  @RequestParam("algorithm") Algorithm algorithm, @RequestParam("ratioFrom") Integer ratioFrom, @RequestParam("ratioTo") Integer ratioTo) throws IOException {
         GenericAuthenticationToken authentication = (GenericAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getById((long)authentication.getPrincipal());
         algorithmService.process(algorithm, resourceExternalId, ratioFrom, ratioTo, user);
-        return "Ok";
+        return ok();
     }
 
 
