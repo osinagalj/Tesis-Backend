@@ -1,0 +1,13 @@
+package com.ecofy.core.repositories;
+
+
+import com.ecofy.core.model.AccessRole;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface AccessRoleRepository extends PublicObjectRepository<AccessRole, Long> {
+
+    public Optional<AccessRole> findByName(String name);
+}

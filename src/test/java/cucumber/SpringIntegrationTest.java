@@ -3,7 +3,7 @@ package cucumber;
 
 import com.atlassian.ta.wiremockpactgenerator.WireMockPactGenerator;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
-import com.unicen.AppApplication;
+import com.ecofy.AppApplication;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;

@@ -1,6 +1,6 @@
 package cucumber.steps.oldSteps;
 
-import com.unicen.app.domain.Employee;
+import com.ecofy.app.domain.Employee;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import org.junit.Ignore;
