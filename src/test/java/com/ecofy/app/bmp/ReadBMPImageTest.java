@@ -1,6 +1,11 @@
 package com.ecofy.app.bmp;
 
 
+import com.ecofy.BMPUtils;
+import com.ecofy.CapturedImage;
+import com.ecofy.app.algorithms.LeeFilter;
+import com.ecofy.app.dto.ProcessedImage;
+import com.ecofy.app.model.Algorithm;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import javax.imageio.*;
@@ -20,7 +25,7 @@ public class ReadBMPImageTest {
 
     public static long random = new Date().getTime();
 
-    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/1GreyScale.bmp";
+    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/4GreyScale.bmp";
 
     public static String DESTINATION_BMP_PATH = "src/test/resources/static/generated/01_bmp" + random + ".bmp";
 
@@ -78,6 +83,86 @@ public class ReadBMPImageTest {
         }
 
         return pixelArray;
+    }
+
+
+    @Test
+    public void inputSteamToByteArray() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
+        int[][] array = convertBMPToArray(inputStream);
+
+        CapturedImage capturedImage = new CapturedImage(0,0,0,0);
+        capturedImage.setImageValues(array);
+        capturedImage.setHeight(array.length);
+        capturedImage.setWidth(array[0].length);
+        CapturedImage newImage = LeeFilter.execute(capturedImage, 3);
+
+        int width   = newImage.getImageValues().length;
+        int height   = newImage.getImageValues()[0].length;
+
+        // Crear un BufferedImage con las dimensiones correspondientes
+        BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        // Asignar los valores de píxeles del array 2D al BufferedImage
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixelValue = array[x][y];
+                // Convertir el valor de píxel de escala de grises a RGB (en este caso, asignamos el mismo valor a los tres canales)
+                int rgb = (pixelValue << 16) | (pixelValue << 8) | pixelValue;
+                bmpImage.setRGB(x, y, rgb);
+            }
+        }
+
+        File outputfile = new File(DESTINATION_BMP_PATH);
+        ImageIO.write(bmpImage, "bmp", outputfile);
+    }
+
+    public static byte[] getImageBytes(BufferedImage image, String formatName) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, formatName, baos);
+        baos.flush();
+        byte[] imageBytes = baos.toByteArray();
+        baos.close();
+        return imageBytes;
+    }
+
+    public static ProcessedImage algorithmLee (InputStream image, Integer ratio, String originalExternalId, String name) throws IOException {
+        //Aplica algoritmo de lee
+        //Guarda la imagen (asociada al resourceExternalid original)
+        Color color = new Color(255, 255, 255); //white
+
+
+        CapturedImage capturedImage = new CapturedImage(0,0,0,0);
+        int[][] array = BMPUtils.convertBMPToArray(image);
+        capturedImage.setImageValues(array);
+        capturedImage.setHeight(array.length);
+        capturedImage.setWidth(array[0].length);
+        CapturedImage newImage = LeeFilter.execute(capturedImage, ratio);
+
+        int  width = newImage.getImageValues().length;
+        int height  = newImage.getImageValues()[0].length;
+
+        // Crear un BufferedImage con las dimensiones correspondientes
+        BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        // Asignar los valores de píxeles del array 2D al BufferedImage
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixelValue = array[y][x];
+                // Convertir el valor de píxel de escala de grises a RGB (en este caso, asignamos el mismo valor a los tres canales)
+                int rgb = (pixelValue << 16) | (pixelValue << 8) | pixelValue;
+                bmpImage.setRGB(x, y, rgb);
+            }
+        }
+
+
+        ProcessedImage result = new ProcessedImage();
+        result.setRatio(ratio);
+        result.setOriginalExternalId(originalExternalId);
+        result.setImage(BMPUtils.getImageBytes(bmpImage, "bmp"));
+        result.setAlgorithm(Algorithm.LEE.getString());
+        result.setName(name);
+        return result;
     }
 
 }

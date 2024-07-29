@@ -18,7 +18,7 @@ public class LeeFilterTest {
 
     LeeRobustFilter leeRobustFilter = new LeeRobustFilter();
 
-    public static String ORIGINAL_BMP_IMAGE_TEST = "/static/bmp/4GreyScale.bmp";
+    public static String ORIGINAL_BMP_IMAGE_TEST = "/static/bmp/3GreyScale.bmp";
     public static String ORIGINAL_BMP_IMAGE = "/static/bmp/PlaneFromJPG.bmp";
 
 
@@ -35,12 +35,12 @@ public class LeeFilterTest {
         int height = new2d.length;
         int width = new2d[0].length;
 
-        for(int i=1; i<=50; i++){
+        for(int i=1; i<=20; i++){
             long random = new Date().getTime();
             CapturedImage capturedImage = new CapturedImage(width,height, 0, 0);
             capturedImage.setImageValues(new2d);
-            CapturedImage newImageAfterFilter = leeFilter.leeFilter(capturedImage, i);
-            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_radius_" + i + "_" +  random + ".bmp");
+            CapturedImage newImageAfterFilter = leeFilter.execute(capturedImage, i);
+            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_ratio_" + i + "_" +  random + ".bmp");
         }
     }
 

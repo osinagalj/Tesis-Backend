@@ -37,7 +37,7 @@ public class LeeFilterTest {
             long random = new Date().getTime();
             CapturedImage capturedImage = new CapturedImage(width, height, 0, 0);
             capturedImage.setImageValues(new2d);
-            CapturedImage newImageAfterFilter = leeFilter.leeFilter(capturedImage, i);
+            CapturedImage newImageAfterFilter = leeFilter.execute(capturedImage, i);
             writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_radius_" + i + "_" +  random + ".bmp");
 
         }

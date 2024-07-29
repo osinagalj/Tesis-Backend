@@ -7,8 +7,6 @@ public abstract class AlgorithmFilter {
 
     public static AlgorithmFilter of(Algorithm algorithm) {
         switch (algorithm) {
-            case LEE:
-                return new LeeFilter();
             case ROBUST_LEE:
                 return new LeeRobustFilter();
             case MEDIAN:
@@ -16,6 +14,4 @@ public abstract class AlgorithmFilter {
         }
         return null;
     }
-
-    public abstract CapturedImage execute(int [][] image);
 }

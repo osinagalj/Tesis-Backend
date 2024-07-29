@@ -1,24 +1,13 @@
 package com.ecofy.app.algorithms;
 
 import com.ecofy.CapturedImage;
-import io.swagger.models.auth.In;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
-import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.*;
+
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.*;
-import java.util.Date;
 
-import static com.ecofy.Utils.compararInputStreams;
-
-public class LeeFilter extends AlgorithmFilter{
+public class LeeFilter{
 
 
     public static String ORIGINAL_IMAGE = "/static/generated/01.jpg";
@@ -29,8 +18,7 @@ public class LeeFilter extends AlgorithmFilter{
 
     }
 
-
-    public CapturedImage leeFilter(CapturedImage item, int radius) {
+    public static CapturedImage execute(CapturedImage item, int radius) {
         // Get the dimensions of the image
         int H = item.getHeight();  // Height of the image
         int W = item.getWidth();   // Width of the image
@@ -113,7 +101,7 @@ public class LeeFilter extends AlgorithmFilter{
     }
 
 
-    private int numberCells(CapturedImage item, int row, int col, int radius) {
+    private static int numberCells(CapturedImage item, int row, int col, int radius) {
         int count = 0;
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {
