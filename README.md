@@ -16,7 +16,10 @@ This service is currently supported by Lautaro Osinaga.
 6. You may now run/debug the service in IntelliJ
     1. Navigate to [localhost:8080](http://localhost:8080/) to view the UI
 
+
 ## Common Issues
+`Click in the project -> Maven -> Reload project`
+
 
 ##### AB test overrides are not working
 Make sure you have a valid java version.
@@ -33,7 +36,7 @@ vault login -no-print -tls-skip-verify -address=https://vault-enterprise.us-west
 
 ------------
 ## Release Process
-Documentation: https://confluence.expedia.biz/pages/viewpage.action?pageId=2434844244#CarFrontendReleases(bexapiandbernie)-ReleaseforBEX-API
+Documentation: 
 
 ```properties
 spring_profiles_active=prod
