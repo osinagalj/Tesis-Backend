@@ -11,6 +11,7 @@ import com.unicen.core.services.AuthenticationService;
 import com.unicen.core.services.UserService;
 import com.unicen.core.utils.JsonMap;
 import com.unicen.core.model.*;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import java.util.Map;
  * Authentication controller for logging in or signing up to the Application
  */
 @RestController
+@Api(tags = "2. Authentication")
 @RequestMapping(value = "/auth")
 @PreAuthorize("permitAll()")
 public class AuthController extends GenericController<AuthenticationToken, AuthenticationTokenDTO> {

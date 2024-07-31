@@ -12,6 +12,7 @@ import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.User;
 import com.unicen.core.security.GenericAuthenticationToken;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 @Controller
 @PreAuthorize("permitAll")
 @RequestMapping("/results")
+@Api(tags = "6. Results")
 public class ImageResultController extends GenericController<ImageResult, ImageResultDTO> {
 
     @Override
@@ -72,11 +74,8 @@ public class ImageResultController extends GenericController<ImageResult, ImageR
         MediaType contentType = MediaType.IMAGE_JPEG;
         InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
 
-        //var image = service.findAll().stream().findFirst();
         var image =  service.findByExternalIdAndFetchImageEagerly(externalId);
 
-
-        // var a = service.findAll().stream().findFirst();
         if(!image.isPresent()){
             throw CoreApiException.objectNotFound("Resource : " + externalId + " not exists");
 

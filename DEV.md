@@ -6,6 +6,8 @@ Status: http://localhost:8080/status
 
 Swagger: http://localhost:8080/swagger-ui (User: testing, password: testing)
 
+token:
+dev: '${TOKEN_DEV:abcd}'
 
 # How Auth to use swagger:
 

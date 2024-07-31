@@ -96,12 +96,6 @@ public class AlgorithmService  {
         result.setAlgorithm(Algorithm.LEE.getString());
         result.setName(name);
 
-        long random = new Date().getTime();
-
-        String DESTINATION_BMP_PATH = "src/main/resources/static/generated/01_bmp_" + ratio + "  -  " + random + ".bmp";
-        File outputfile = new File(DESTINATION_BMP_PATH);
-        ImageIO.write(bmpImage, "bmp", outputfile);
-
         return result;
     }
 

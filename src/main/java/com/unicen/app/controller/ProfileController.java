@@ -8,6 +8,7 @@ import com.unicen.core.model.GenericSuccessResponse;
 import com.unicen.core.model.User;
 import com.unicen.core.security.GenericAuthenticationToken;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/profile")
 @PreAuthorize("permitAll")
+@Api(tags = "6. Profile")
 /*@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")*/
 public class ProfileController extends GenericController<User, ProfileDTO> {
 

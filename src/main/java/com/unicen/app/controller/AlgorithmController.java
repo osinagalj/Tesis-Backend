@@ -11,6 +11,7 @@ import com.unicen.core.model.GenericSuccessResponse;
 import com.unicen.core.model.User;
 import com.unicen.core.security.GenericAuthenticationToken;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.io.IOException;
 
 @Controller
 @PreAuthorize("permitAll")
+@Api(tags = "3. Algorithms")
 @RequestMapping("/algorithm")
 public class AlgorithmController extends GenericController<ImageResult, ImageResultDTO> {
 
@@ -35,8 +37,6 @@ public class AlgorithmController extends GenericController<ImageResult, ImageRes
     protected Class<ImageResult> getObjectClass() {
         return ImageResult.class;
     }
-
-    private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     AlgorithmService algorithmService;

@@ -5,6 +5,7 @@ import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.dto.UserModelDTO;
 import com.unicen.core.model.User;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')")
+@Api(tags = "4. Users ")
 @RequestMapping("/users")
 public class UserController extends GenericController<User, UserModelDTO> {
 

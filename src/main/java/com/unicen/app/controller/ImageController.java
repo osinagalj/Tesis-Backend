@@ -11,6 +11,7 @@ import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.GenericSuccessResponse;
 import com.unicen.core.model.User;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -31,6 +32,7 @@ import org.springframework.core.io.Resource;
 
 @Controller
 @PreAuthorize("permitAll")
+@Api(tags = "5. Images")
 @RequestMapping("/images")
 public class ImageController extends GenericController<Image, ImageDTO> {
 
