@@ -44,7 +44,7 @@ public class SecurityConfiguration {
         private AuthenticationService authenticationService;
 
         @Autowired(required = false)
-        private EnsolversCoreSecurityConfiguration securityConfiguration;
+        private CoreSecurityConfiguration securityConfiguration;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -75,15 +75,18 @@ public class SecurityConfiguration {
     public class ApiDocumentationSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Autowired(required = false)
-        private EnsolversCoreApiDocumentationConfiguration apiDocumentationConfiguration;
+        private CoreApiDocumentationConfiguration apiDocumentationConfiguration;
 
         @Bean
         public UserDetailsService userDetailsService() {
             User.UserBuilder users = User.builder().passwordEncoder(encoder()::encode);
             InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
             if (apiDocumentationConfiguration != null) {
-                manager.createUser(users.username(apiDocumentationConfiguration.swaggerUsername()).password(apiDocumentationConfiguration.swaggerPassword())
-                        .roles("USER").build());
+                manager.createUser(
+                        users.username(apiDocumentationConfiguration.swaggerUsername())
+                                .password(apiDocumentationConfiguration.swaggerPassword())
+                        .roles("USER")
+                                .build());
             }
             return manager;
         }
@@ -91,7 +94,7 @@ public class SecurityConfiguration {
         protected void configure(HttpSecurity http) throws Exception {
             http.requestMatchers()
                     .antMatchers("/swagger-ui/**", "/v2/api-docs", "/webjars/springfox-swagger-ui/**", "/swagger-resources/**", "/swagger-resources/").and()
-                    .authorizeRequests(authorize -> authorize.anyRequest().hasRole("USER")).httpBasic(withDefaults());
+                    .authorizeRequests(authorize -> authorize.anyRequest().hasRole("ROLE_USER")).httpBasic(withDefaults());
         }
     }
 

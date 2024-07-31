@@ -25,7 +25,8 @@ import java.util.List;
 @Configuration
 public class ApiDocumentationConfiguration {
 
-    @Autowired(required = false) EnsolversCoreApiDocumentationConfiguration apiDocumentationConfiguration;
+    @Autowired(required = false)
+    CoreApiDocumentationConfiguration apiDocumentationConfiguration;
 
     @Bean
     public Docket api() {

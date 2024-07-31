@@ -45,7 +45,8 @@ management:
     env:
       enabled: true
 
-
+swaggerUsername: testing
+swaggerPassword: testing
 
 ensolvers:
   security:

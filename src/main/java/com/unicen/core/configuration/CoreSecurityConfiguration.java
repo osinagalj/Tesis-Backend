@@ -2,7 +2,7 @@ package com.unicen.core.configuration;
 
 import java.util.List;
 
-public interface EnsolversCoreSecurityConfiguration {
+public interface CoreSecurityConfiguration {
 
     List<String> additionalPublicPaths();
 

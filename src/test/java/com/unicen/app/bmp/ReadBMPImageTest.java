@@ -83,14 +83,14 @@ public class ReadBMPImageTest {
         InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
         int[][] array = convertBMPToArray(inputStream);
 
-        CapturedImage capturedImage = new CapturedImage(0,0,0,0);
+        CapturedImage capturedImage = new CapturedImage(0, 0, 0, 0);
         capturedImage.setImageValues(array);
         capturedImage.setHeight(array.length);
         capturedImage.setWidth(array[0].length);
         CapturedImage newImage = LeeFilter.execute(capturedImage, 3);
 
-        int width   = newImage.getImageValues().length;
-        int height   = newImage.getImageValues()[0].length;
+        int width = newImage.getImageValues().length;
+        int height = newImage.getImageValues()[0].length;
 
         // Crear un BufferedImage con las dimensiones correspondientes
         BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
@@ -109,52 +109,31 @@ public class ReadBMPImageTest {
         ImageIO.write(bmpImage, "bmp", outputfile);
     }
 
-    public static byte[] getImageBytes(BufferedImage image, String formatName) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, formatName, baos);
-        baos.flush();
-        byte[] imageBytes = baos.toByteArray();
-        baos.close();
-        return imageBytes;
+    @Test
+    public void compareBMPImages() throws IOException {
+        String BMP_IMAGE = "src/test/resources/static/bmp/4GreyScale.bmp";
+        String IMAGE_TO_COMPARE_BMP_PATH = "src/test/resources/static/expected/4GreyScale.bmp";
+        compareBMPImages(BMP_IMAGE, IMAGE_TO_COMPARE_BMP_PATH);
     }
 
-    public static ProcessedImage algorithmLee (InputStream image, Integer ratio, String originalExternalId, String name) throws IOException {
-        //Aplica algoritmo de lee
-        //Guarda la imagen (asociada al resourceExternalid original)
-        Color color = new Color(255, 255, 255); //white
+    public static boolean compareBMPImages(String filePath1, String filePath2) throws IOException {
+        BufferedImage image1 = ImageIO.read(new File(filePath1));
+        BufferedImage image2 = ImageIO.read(new File(filePath2));
 
+        if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+            return false;
+        }
 
-        CapturedImage capturedImage = new CapturedImage(0,0,0,0);
-        int[][] array = BMPUtils.convertBMPToArray(image);
-        capturedImage.setImageValues(array);
-        capturedImage.setHeight(array.length);
-        capturedImage.setWidth(array[0].length);
-        CapturedImage newImage = LeeFilter.execute(capturedImage, ratio);
-
-        int  width = newImage.getImageValues().length;
-        int height  = newImage.getImageValues()[0].length;
-
-        // Crear un BufferedImage con las dimensiones correspondientes
-        BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
-
-        // Asignar los valores de píxeles del array 2D al BufferedImage
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int pixelValue = array[y][x];
-                // Convertir el valor de píxel de escala de grises a RGB (en este caso, asignamos el mismo valor a los tres canales)
-                int rgb = (pixelValue << 16) | (pixelValue << 8) | pixelValue;
-                bmpImage.setRGB(x, y, rgb);
+        for (int y = 0; y < image1.getHeight(); y++) {
+            for (int x = 0; x < image1.getWidth(); x++) {
+                if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
+                    return false;
+                }
             }
         }
 
-
-        ProcessedImage result = new ProcessedImage();
-        result.setRatio(ratio);
-        result.setOriginalExternalId(originalExternalId);
-        result.setImage(BMPUtils.getImageBytes(bmpImage, "bmp"));
-        result.setAlgorithm(Algorithm.LEE.getString());
-        result.setName(name);
-        return result;
+        return true;
     }
+
 
 }

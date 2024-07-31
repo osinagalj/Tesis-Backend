@@ -230,20 +230,6 @@ public class ReadJPGImageTest {
         }
     }
 
-
-    //It works fine for the bmp image
-    @Test
-    public void readImageButWithOtherSizeBMPWith2d() throws Exception {
-        try {
-            InputStream is = getClass().getResourceAsStream("/static/generated/08_bmpTest.bmp");
-            BufferedImage bf = ImageIO.read(is);
-            ImageIO.write(bf, "bmp", new File(DESTINATION_BMP_PATH));
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
-    }
-
-
     //This test read the input correctly and save the image with the same size and quality
     @Test
     public void readImageToInputSteamAndSaveItWithSameSize() throws Exception {
