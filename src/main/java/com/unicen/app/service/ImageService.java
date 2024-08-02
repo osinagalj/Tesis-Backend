@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static com.unicen.core.model.User.PROFILE_PICTURE_DEFAULT_NAME;
+
 
 @Service
 public class ImageService extends PublicObjectCrudService<Image, ImageRepository> {
@@ -53,7 +55,10 @@ public class ImageService extends PublicObjectCrudService<Image, ImageRepository
         Sort sortBy = Sort.by(order, propertiesToOrder);
 
         Sort sort = Sort.by(Sort.Direction.ASC, "abc");
-        Specification<Image> spec = (root, query, cb) -> cb.equal(root.get("owner"), user.getId());
+        Specification<Image> spec = (root, query, cb) -> cb.and(
+                cb.equal(root.get("owner"), user.getId()),
+                cb.notEqual(root.get("name"), PROFILE_PICTURE_DEFAULT_NAME)
+        );
         // Obtiene la primera página de imágenes del repositorio
         Page<Image> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize, sortBy));
         return imagePage;

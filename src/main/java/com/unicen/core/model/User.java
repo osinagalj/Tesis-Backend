@@ -78,4 +78,7 @@ public class User extends AuditableModel<User> {
     public void removeRole(AccessRole role) {
         roles.remove(role);
     }
+
+    public static String PROFILE_PICTURE_DEFAULT_NAME = "Profile Picture";
+
 }

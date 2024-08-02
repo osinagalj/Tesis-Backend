@@ -23,6 +23,8 @@ import java.util.function.Supplier;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.unicen.core.model.User.PROFILE_PICTURE_DEFAULT_NAME;
+
 @Service
 public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
@@ -33,6 +35,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
     private final AccessRoleService accessRoleService;
     private final AuthenticationTokenService authenticationTokenService;
+
 
     /**
      * A secret that is generated once per app start and can be accessed only by the engineering team for doing admin-related
@@ -78,7 +81,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
         User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
 
-        Image image = new Image("Image from test 2",1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());
+        Image image = new Image(PROFILE_PICTURE_DEFAULT_NAME,1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());
         image.ensureExternalId();
         user.setImage(imageService.save(image));
         this.update(user.getId(), user);
