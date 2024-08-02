@@ -1,8 +1,8 @@
 package com.unicen.app.service;
 
 import com.unicen.app.model.Image;
-import com.unicen.app.model.ImageResult;
-import com.unicen.app.repository.ImageResultRepository;
+import com.unicen.app.model.Result;
+import com.unicen.app.repository.ResultRepository;
 import com.unicen.core.services.PublicObjectCrudService;
 import com.unicen.core.spring.lightweightcontainer.GlobalApplicationContext;
 import org.slf4j.Logger;
@@ -19,30 +19,30 @@ import java.util.Optional;
 
 
 @Service
-public class ImageResultService extends PublicObjectCrudService<ImageResult, ImageResultRepository> {
+public class ResultService extends PublicObjectCrudService<Result, ResultRepository> {
     private static Logger LOGGER = LoggerFactory.getLogger(GlobalApplicationContext.class);
 
 
-    public ImageResultService(ImageResultRepository repository) {
+    public ResultService(ResultRepository repository) {
         super(repository);
 
     }
 
     @Override
-    protected void updateData(ImageResult existingObject, ImageResult updatedObject) {
+    protected void updateData(Result existingObject, Result updatedObject) {
 
     }
 
     @Override
-    protected Class<ImageResult> getObjectClass() {
-        return ImageResult.class;
+    protected Class<Result> getObjectClass() {
+        return Result.class;
     }
 
 
     @Transactional
     public void saveImage(String name, String algorithm, Integer ratio, String type, byte[] data, Image original) throws IOException {
 
-        ImageResult image = new ImageResult(name,algorithm ,ratio,type, data, original);
+        Result image = new Result(name,algorithm ,ratio,type, data, original);
         image.ensureExternalId();
         repository.save(image);
         /*user.setImage(imageService.save(image));*/
@@ -53,8 +53,8 @@ public class ImageResultService extends PublicObjectCrudService<ImageResult, Ima
     }
 
     @Transactional
-    public Optional<ImageResult> findByExternalIdAndFetchImageEagerly(String externalId) throws IOException {
-        Specification<ImageResult> spec = (root, query, cb) -> cb.equal(root.get("externalId"), externalId);
+    public Optional<Result> findByExternalIdAndFetchImageEagerly(String externalId) throws IOException {
+        Specification<Result> spec = (root, query, cb) -> cb.equal(root.get("externalId"), externalId);
         // Obtiene la primera página de imágenes del repositorio
         var imagePage = repository.findByExternalId(externalId);
         return  repository.findByExternalIdAndFetchImageEagerly(externalId);   //new ArrayList<>();
@@ -62,11 +62,11 @@ public class ImageResultService extends PublicObjectCrudService<ImageResult, Ima
 
 
     @Transactional(readOnly = true)
-    public Page<ImageResult> findPageImages(Long externalId, int page, int pageSize, Sort.Direction order, String... propertiesToOrder) {
+    public Page<Result> findPageImages(Long externalId, int page, int pageSize, Sort.Direction order, String... propertiesToOrder) {
         Sort sortBy = Sort.by(order, propertiesToOrder);
-        Specification<ImageResult> spec = (root, query, cb) -> cb.equal(root.get("originalImageId"), externalId);
+        Specification<Result> spec = (root, query, cb) -> cb.equal(root.get("originalImageId"), externalId);
         // Obtiene la primera página de imágenes del repositorio
-        Page<ImageResult> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize, sortBy));
+        Page<Result> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize, sortBy));
 
         return imagePage;
     }

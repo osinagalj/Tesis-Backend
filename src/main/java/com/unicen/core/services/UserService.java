@@ -77,8 +77,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
 
     @Transactional
     public void updatePictureOfUser(String userExternalId, String type, MultipartFile file) throws IOException {
-        //TODO change this
-        Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
+        Optional<User> maybeUser = repository.findByExternalId(userExternalId); //repository.findByEmail("dev@gmail.com");
         User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
 
         Image image = new Image(PROFILE_PICTURE_DEFAULT_NAME,1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());

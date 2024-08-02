@@ -55,7 +55,7 @@ public class ProfileController extends GenericController<User, ProfileDTO> {
     @PostMapping("/upload-image")
     @ResponseBody
     public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("userExternalId") String userExternalId, @RequestParam("type") String type, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        service.updatePictureOfUser(userExternalId,ImageType.getType(type), multipartFile);
+        service.updatePictureOfUser(userExternalId, ImageType.getType(type), multipartFile);
         return ok();
     }
 

@@ -1,4 +1,4 @@
-package com.unicen.app;
+package com.unicen.app.utils;
 
 import com.unicen.core.services.ApplicationPropertiesService;
 import com.unicen.core.services.EmailService;

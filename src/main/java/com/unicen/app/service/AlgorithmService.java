@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Date;
 import java.util.List;
 
 import static com.unicen.BMPUtils.convertBMPToArray;
@@ -30,7 +29,7 @@ public class AlgorithmService  {
     ImageService imageService;
 
     @Autowired
-    ImageResultService imageResultService;
+    ResultService imageResultService;
 
     public void process (Algorithm algorithm,String resourceExternalId, Integer ratioFrom, Integer ratioTo, User user) throws IOException {
         Integer ratio = ratioFrom;

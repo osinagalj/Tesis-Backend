@@ -49,6 +49,6 @@ public class Image extends AuditableModel<Image> {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
-    private List<ImageResult> imagesList;
+    private List<Result> imagesList;
 
 }

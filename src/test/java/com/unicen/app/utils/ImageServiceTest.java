@@ -1,4 +1,4 @@
-package com.unicen.app;
+package com.unicen.app.utils;
 
 import com.unicen.app.model.Image;
 import com.unicen.app.service.ImageService;

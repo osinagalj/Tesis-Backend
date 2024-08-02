@@ -1,4 +1,4 @@
-package com.unicen.app;
+package com.unicen.app.utils;
 
 import org.junit.jupiter.api.Test;
 

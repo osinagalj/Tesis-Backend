@@ -3,8 +3,8 @@ package com.unicen.app.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicen.app.dto.ImageResultDTO;
 import com.unicen.app.model.Image;
-import com.unicen.app.model.ImageResult;
-import com.unicen.app.service.ImageResultService;
+import com.unicen.app.model.Result;
+import com.unicen.app.service.ResultService;
 import com.unicen.app.service.ImageService;
 import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
@@ -33,7 +33,7 @@ import java.io.InputStream;
 @PreAuthorize("permitAll")
 @RequestMapping("/results")
 @Api(tags = "6. Results")
-public class ImageResultController extends GenericController<ImageResult, ImageResultDTO> {
+public class ResultController extends GenericController<Result, ImageResultDTO> {
 
     @Override
     protected Class<ImageResultDTO> getDTOClass() {
@@ -41,14 +41,14 @@ public class ImageResultController extends GenericController<ImageResult, ImageR
     }
 
     @Override
-    protected Class<ImageResult> getObjectClass() {
-        return ImageResult.class;
+    protected Class<Result> getObjectClass() {
+        return Result.class;
     }
 
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    ImageResultService service;
+    ResultService service;
 
     @Autowired
     UserService userService;

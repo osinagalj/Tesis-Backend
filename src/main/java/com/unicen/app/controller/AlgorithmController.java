@@ -1,9 +1,8 @@
 package com.unicen.app.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unicen.app.dto.ImageResultDTO;
 import com.unicen.app.model.Algorithm;
-import com.unicen.app.model.ImageResult;
+import com.unicen.app.model.Result;
 import com.unicen.app.service.AlgorithmService;
 import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
@@ -26,7 +25,7 @@ import java.io.IOException;
 @PreAuthorize("permitAll")
 @Api(tags = "3. Algorithms")
 @RequestMapping("/algorithm")
-public class AlgorithmController extends GenericController<ImageResult, ImageResultDTO> {
+public class AlgorithmController extends GenericController<Result, ImageResultDTO> {
 
     @Override
     protected Class<ImageResultDTO> getDTOClass() {
@@ -34,8 +33,8 @@ public class AlgorithmController extends GenericController<ImageResult, ImageRes
     }
 
     @Override
-    protected Class<ImageResult> getObjectClass() {
-        return ImageResult.class;
+    protected Class<Result> getObjectClass() {
+        return Result.class;
     }
 
     @Autowired
