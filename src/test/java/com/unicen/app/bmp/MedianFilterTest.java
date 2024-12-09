@@ -1,8 +1,8 @@
 package com.unicen.app.bmp;
 
 import com.unicen.CapturedImage;
-import com.unicen.app.algorithms.LeeFilter;
 import com.unicen.app.algorithms.LeeRobustFilter;
+import com.unicen.app.algorithms.MedianFilterHuang;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.ImageIO;
@@ -12,17 +12,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
-public class LeeFilterTest {
+public class MedianFilterTest {
 
-    LeeFilter leeFilter = new LeeFilter();
+    MedianFilterHuang medianFilterHuang = new MedianFilterHuang();
 
     LeeRobustFilter leeRobustFilter = new LeeRobustFilter();
 
     public static String ORIGINAL_BMP_IMAGE_TEST = "/static/bmp/3GreyScale.bmp";
-    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/generatedBMP.bmp";
+    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/planeBMP.bmp";
 
 
-    public static String DESTINATION_BMP_PATH = "src/test/resources/static/generated/01_bmp";
+    public static String DESTINATION_BMP_PATH = "src/test/resources/static/bmp/median01.bmp";
 
 
 
@@ -35,15 +35,14 @@ public class LeeFilterTest {
         int height = new2d.length;
         int width = new2d[0].length;
 
-        for(int i=1; i<=20; i++){
+        for(int i=1; i<=1; i++){
             long random = new Date().getTime();
             CapturedImage capturedImage = new CapturedImage(width,height, 0, 0);
             capturedImage.setImageValues(new2d);
-            CapturedImage newImageAfterFilter = leeFilter.execute(capturedImage, i);
+            CapturedImage newImageAfterFilter = MedianFilterHuang.execute(capturedImage, 0.3d, 5);
             writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_ratio_" + i + "_" +  random + ".bmp");
         }
     }
-
 
     public static void writeArrayToBMP(int[][] pixelArray, String filePath) throws IOException {
         int height = pixelArray.length;
@@ -68,6 +67,7 @@ public class LeeFilterTest {
 
         System.out.println("Imagen BMP escrita correctamente en: " + filePath);
     }
+
 
     public static int[][] convertBMPToArray(InputStream file) throws IOException {
         BufferedImage bmpImage = ImageIO.read(file);

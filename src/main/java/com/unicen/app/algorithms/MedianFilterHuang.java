@@ -7,68 +7,89 @@ public class MedianFilterHuang extends AlgorithmFilter{
     public  CapturedImage execute(int [][] image){
         return null;
     }
-    public CapturedImage medianFilterHuang(CapturedImage item, double k, int dist) {
+    public static CapturedImage execute(CapturedImage item, double k, int dist) {
         // Create a new CapturedImage instance
-        CapturedImage aux = new CapturedImage(item.getWidth(), item.getHeight(), item.getDepth(), item.getChannels());
+        CapturedImage aux = new CapturedImage(item.getHeight(), item.getWidth(), item.getDepth(), item.getChannels());
+
+        System.out.println("height:" + item.getHeight());
+        System.out.println("width:" + item.getWidth());
 
         // Create array histogram
         int[][] histogram = new int[item.getHeight()][256];
 
         // Initialize histogram with 0
+        System.out.println("Init histogram with 0");
+
         for (int row = 0; row < item.getHeight(); row++) {
             for (int col = 0; col < 256; col++) {
                 histogram[row][col] = 0;
             }
         }
+        System.out.println("Init histogram");
 
         // Initialize histogram with initial values
         int icol = 0;
         for (int row = 0; row < item.getHeight(); row++) {
             for (int i = -dist; i <= dist; i++) {
                 for (int j = -dist; j <= dist; j++) {
-                    if (isValidCoordinate(row + i, icol + j, item.getHeight(), item.getWidth())) {
-                        histogram[row][item.getValueImage(row + i, icol + j)]++;
+                    if((row+i >= 0)&&((icol+j >= 0)&&(row+i < item.getHeight())&&(icol+j < item.getWidth())))
+                        try{
+                            histogram[row][item.getValueImage(row + i, icol + j)]++;
+
+                        }catch (Exception e){
+
+                            System.out.println(e);
+                            System.out.println("row: " + row );
+                            System.out.println("col: " + icol );
+
+                        }
                     }
                 }
-            }
         }
 
-        // Huang Algorithm
+
+        System.out.println("Algoritmo de huan:");
+
+        // Algoritmo de Huang
+        int nc = 0;
         for (int row = 0; row < item.getHeight(); row++) {
             for (int col = 0; col < item.getWidth(); col++) {
-                // Calculate median
-                int i = 0;
-                int suma = 0;
-                int nc = numberCells(item, row, col, dist);
+                // Calcular la mediana
+                int i = 0, suma = 0;
 
-                while (i < 256 && suma <= k * nc) {
+                nc = numberCells(item, row, col, dist);
+
+                while ((i < 256) && (suma <= k * nc)) {
                     suma += histogram[row][i];
                     i++;
                 }
 
-                // Update histogram
+
+                // Actualizar el histograma (eliminar columna y agregar la nueva columna)
                 for (int j = -dist; j <= dist; j++) {
-                    // Removing column
-                    if (isValidCoordinate(row + j, col - dist, item.getHeight(), item.getWidth())) {
+                    if ((row + j >= 0) && (row + j < item.getHeight()) && (col - dist >= 0) && (col - dist < item.getWidth())) {
                         histogram[row][item.getValueImage(row + j, col - dist)]--;
                     }
-                    // Adding column
-                    if (isValidCoordinate(row + j, col + dist + 1, item.getHeight(), item.getWidth())) {
+
+                    if ((row + j >= 0) && (row + j < item.getHeight()) && (col + dist + 1 >= 0) && (col + dist + 1 < item.getWidth())) {
                         histogram[row][item.getValueImage(row + j, col + dist + 1)]++;
                     }
                 }
+                System.out.println("row: " + row);
+                System.out.println("colum: " + col);
+
 
                 aux.setValueImage(row, col, i - 1);
             }
         }
+
+
+        System.out.println("Returning captured image");
         return aux;
     }
 
-    private boolean isValidCoordinate(int row, int col, int height, int width) {
-        return row >= 0 && col >= 0 && row < height && col < width;
-    }
 
-    private int numberCells(CapturedImage item, int row, int col, int radius) {
+    private static int numberCells(CapturedImage item, int row, int col, int radius) {
         int count = 0;
         for (int i = -radius; i <= radius; i++) {
             for (int j = -radius; j <= radius; j++) {

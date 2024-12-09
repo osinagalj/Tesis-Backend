@@ -1,14 +1,10 @@
 package com.unicen.app.bmp;
 
 
-import com.unicen.BMPUtils;
 import com.unicen.CapturedImage;
 import com.unicen.app.algorithms.LeeFilter;
-import com.unicen.app.dto.ProcessedImage;
-import com.unicen.app.model.Algorithm;
 import org.junit.jupiter.api.Test;
 import javax.imageio.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
@@ -50,7 +46,7 @@ public class ReadBMPImageTest {
 
         // Escribir el BufferedImage en un archivo de imagen BMP
         File bmpFile = new File(filePath);
-        ImageIO.write(bmpImage, "bmp", bmpFile);
+        ImageIO.write(bmpImage, "static/bmp", bmpFile);
 
         System.out.println("Imagen BMP escrita correctamente en: " + filePath);
     }
@@ -106,7 +102,7 @@ public class ReadBMPImageTest {
         }
 
         File outputfile = new File(DESTINATION_BMP_PATH);
-        ImageIO.write(bmpImage, "bmp", outputfile);
+        ImageIO.write(bmpImage, "static/bmp", outputfile);
     }
 
     @Test

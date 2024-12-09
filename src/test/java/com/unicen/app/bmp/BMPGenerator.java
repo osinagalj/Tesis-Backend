@@ -38,7 +38,7 @@ public class BMPGenerator {
         raster.setPixels(0, 0, w, h, data);
 
         // Guarda la imagen en un archivo BMP
-        ImageIO.write(bi, "bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+        ImageIO.write(bi, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
 
         System.out.println("Imagen BMP en escala de grises creada con éxito en: " + DESTINATION_JPG_TO_BMP_PATH);
     }
@@ -66,7 +66,7 @@ public class BMPGenerator {
         raster.setPixels(0, 0, w, h, data);
 
         // Guarda la imagen en un archivo BMP
-        ImageIO.write(bi, "bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+        ImageIO.write(bi, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
 
         System.out.println("Imagen BMP en escala de grises creada con éxito en: " + DESTINATION_JPG_TO_BMP_PATH);
     }
@@ -93,7 +93,7 @@ public class BMPGenerator {
         raster.setPixels(0, 0, w, h, data);
 
         // Guarda la imagen en un archivo BMP
-        ImageIO.write(bi, "bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+        ImageIO.write(bi, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
 
         System.out.println("Imagen BMP en escala de grises creada con éxito en: " + DESTINATION_JPG_TO_BMP_PATH);
     }

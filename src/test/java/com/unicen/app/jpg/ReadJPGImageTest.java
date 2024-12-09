@@ -50,7 +50,7 @@ public class ReadJPGImageTest {
         //writeImage(bmpImage, 1.0f, "bmp"); TODO this write the image but with more size
 
         // Escribir la imagen BMP en un archivo
-        ImageIO.write(bmpImage, "bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+        ImageIO.write(bmpImage, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
     }
 
 

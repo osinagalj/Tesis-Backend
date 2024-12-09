@@ -53,7 +53,7 @@ public class ReadImageTest {
         //writeImage(bmpImage, 1.0f, "bmp"); TODO this write the image but with more size
 
         // Escribir la imagen BMP en un archivo
-        ImageIO.write(bmpImage, "bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+        ImageIO.write(bmpImage, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
     }
 
     //This tests read an bmp image, convert it to array2 and then to bmp image without lossing information
@@ -90,7 +90,7 @@ public class ReadImageTest {
 
         // Escribir el BufferedImage en un archivo de imagen BMP
         File bmpFile = new File(filePath);
-        ImageIO.write(bmpImage, "bmp", bmpFile);
+        ImageIO.write(bmpImage, "static/bmp", bmpFile);
 
         System.out.println("Imagen BMP escrita correctamente en: " + filePath);
     }
@@ -123,7 +123,7 @@ public class ReadImageTest {
         try {
             InputStream is = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
             BufferedImage bf = ImageIO.read(is);
-            ImageIO.write(bf, "bmp", new File(DESTINATION_BMP_PATH));
+            ImageIO.write(bf, "static/bmp", new File(DESTINATION_BMP_PATH));
         } catch (IOException e) {
             System.out.println("Error");
         }
@@ -307,7 +307,7 @@ public class ReadImageTest {
         try {
             InputStream is = getClass().getResourceAsStream("/static/generated/08_bmpTest.bmp");
             BufferedImage bf = ImageIO.read(is);
-            ImageIO.write(bf, "bmp", new File(DESTINATION_BMP_PATH));
+            ImageIO.write(bf, "static/bmp", new File(DESTINATION_BMP_PATH));
         } catch (IOException e) {
             System.out.println("Error");
         }
