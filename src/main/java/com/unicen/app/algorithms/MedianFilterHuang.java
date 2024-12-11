@@ -39,8 +39,7 @@ public class MedianFilterHuang extends AlgorithmFilter{
                         }catch (Exception e){
 
                             System.out.println(e);
-                            System.out.println("row: " + row );
-                            System.out.println("col: " + icol );
+
 
                         }
                     }
@@ -75,8 +74,7 @@ public class MedianFilterHuang extends AlgorithmFilter{
                         histogram[row][item.getValueImage(row + j, col + dist + 1)]++;
                     }
                 }
-                System.out.println("row: " + row);
-                System.out.println("colum: " + col);
+
 
 
                 aux.setValueImage(row, col, i - 1);

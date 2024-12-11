@@ -3,6 +3,7 @@ package com.unicen.app.service;
 import com.unicen.BMPUtils;
 import com.unicen.CapturedImage;
 import com.unicen.app.algorithms.LeeFilter;
+import com.unicen.app.algorithms.LeeRobustFilter;
 import com.unicen.app.algorithms.MedianFilterHuang;
 import com.unicen.app.dto.ProcessedImage;
 import com.unicen.app.model.Algorithm;
@@ -155,10 +156,47 @@ public class AlgorithmService  {
         //Guarda la imagen (asociada al resourceExternalid original)
         Color color = new Color(255, 0, 0); //black
 
+        //Aplica algoritmo de lee
+        //Guarda la imagen (asociada al resourceExternalid original)
+        int[][] array = convertBMPToArray(image);
+
+        CapturedImage capturedImage = new CapturedImage(0,0,0,0);
+        capturedImage.setImageValues(array);
+        capturedImage.setHeight(array.length);
+        capturedImage.setWidth(array[0].length);
+
+        System.out.println("Apply algoritm");
+
+
+        //Apply lee FILTER
+        CapturedImage newImage = LeeRobustFilter.execute(capturedImage, ratio);
+
+        System.out.println("Capture image finish");
+
+        var newArray = newImage.getImageValues();
+        int width   = newImage.getImageValues().length;
+        int height   = newImage.getImageValues()[0].length;
+
+        // Crear un BufferedImage con las dimensiones correspondientes
+        BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        // Asignar los valores de píxeles del array 2D al BufferedImage
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixelValue = newArray[x][y];
+                // Convertir el valor de píxel de escala de grises a RGB (en este caso, asignamos el mismo valor a los tres canales)
+                int rgb = (pixelValue << 16) | (pixelValue << 8) | pixelValue;
+                bmpImage.setRGB(x, y, rgb);
+            }
+        }
+
+
         ProcessedImage result = new ProcessedImage();
         result.setRatio(ratio);
         result.setOriginalExternalId(originalExternalId);
-        result.setImage(removeHalfImage(image, color));
+        result.setImage(BMPUtils.getImageBytes(bmpImage, "bmp"));
+
+//        result.setImage(removeHalfImage(image, color));
         result.setAlgorithm(Algorithm.ROBUST_LEE.getString());
         result.setName(name);
         return result;

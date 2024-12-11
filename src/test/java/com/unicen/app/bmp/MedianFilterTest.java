@@ -25,6 +25,26 @@ public class MedianFilterTest {
     public static String DESTINATION_BMP_PATH = "src/test/resources/static/bmp/median01.bmp";
 
 
+    @Test
+    public void LeeRobust() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
+        int[][] new2d = convertBMPToArray(inputStream);
+
+        int height = new2d.length;
+        int width = new2d[0].length;
+
+        System.out.println("height:" + height);
+        System.out.println("width:" + width);
+
+        for(int i=1; i<=1; i++){
+            long random = new Date().getTime();
+            CapturedImage capturedImage = new CapturedImage(width, height, 0, 0);
+            capturedImage.setImageValues(new2d);
+            CapturedImage newImageAfterFilter = LeeRobustFilter.execute(capturedImage, i);
+            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_robust_radius_" + i + "_" +  random + ".bmp");
+
+        }
+    }
 
     //Filter lee working with radius and images created!
     @Test
@@ -35,14 +55,18 @@ public class MedianFilterTest {
         int height = new2d.length;
         int width = new2d[0].length;
 
-        for(int i=1; i<=1; i++){
-            long random = new Date().getTime();
-            CapturedImage capturedImage = new CapturedImage(width,height, 0, 0);
-            capturedImage.setImageValues(new2d);
-            CapturedImage newImageAfterFilter = MedianFilterHuang.execute(capturedImage, 0.3d, 5);
-            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_ratio_" + i + "_" +  random + ".bmp");
-        }
+        System.out.println("height:" + height);
+        System.out.println("width:" + width);
+
+//        for(int i=1; i<=1; i++){
+//            long random = new Date().getTime();
+//            CapturedImage capturedImage = new CapturedImage(width,height, 0, 0);
+//            capturedImage.setImageValues(new2d);
+//            CapturedImage newImageAfterFilter = MedianFilterHuang.execute(capturedImage, 0.3d, 5);
+//            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_ratio_" + i + "_" +  random + ".bmp");
+//        }
     }
+
 
     public static void writeArrayToBMP(int[][] pixelArray, String filePath) throws IOException {
         int height = pixelArray.length;

@@ -19,7 +19,7 @@ public class LeeFilterTest {
     LeeRobustFilter leeRobustFilter = new LeeRobustFilter();
 
     public static String ORIGINAL_BMP_IMAGE_TEST = "/static/bmp/3GreyScale.bmp";
-    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/generatedBMP.bmp";
+    public static String ORIGINAL_BMP_IMAGE = "/static/bmp/planeBMP.bmp";
 
 
     public static String DESTINATION_BMP_PATH = "src/test/resources/static/generated/01_bmp";
@@ -35,7 +35,7 @@ public class LeeFilterTest {
         int height = new2d.length;
         int width = new2d[0].length;
 
-        for(int i=1; i<=20; i++){
+        for(int i=1; i<=10; i++){
             long random = new Date().getTime();
             CapturedImage capturedImage = new CapturedImage(width,height, 0, 0);
             capturedImage.setImageValues(new2d);
@@ -44,6 +44,27 @@ public class LeeFilterTest {
         }
     }
 
+
+    @Test
+    public void LeeRobust() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
+        int[][] new2d = convertBMPToArray(inputStream);
+
+        int height = new2d.length;
+        int width = new2d[0].length;
+
+        System.out.println("height:" + height);
+        System.out.println("width:" + width);
+
+        for(int i=1; i<=10; i++){
+            long random = new Date().getTime();
+            CapturedImage capturedImage = new CapturedImage(width, height, 0, 0);
+            capturedImage.setImageValues(new2d);
+            CapturedImage newImageAfterFilter = LeeRobustFilter.execute(capturedImage, i);
+            writeArrayToBMP(newImageAfterFilter.getImageValues(), DESTINATION_BMP_PATH + "_robust_radius_" + i + "_" +  random + ".bmp");
+
+        }
+    }
 
     public static void writeArrayToBMP(int[][] pixelArray, String filePath) throws IOException {
         int height = pixelArray.length;
