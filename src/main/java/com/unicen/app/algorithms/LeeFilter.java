@@ -7,16 +7,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public class LeeFilter{
+public class LeeFilter extends AlgorithmFilter{
 
 
     public static String ORIGINAL_IMAGE = "/static/generated/01.jpg";
     public static String DESTINATION_PATH = "src/main/resources/static/generated/nueva.png";
 
-    public  CapturedImage execute(int [][] image){
-        return null;
-
-    }
 
     public static CapturedImage execute(CapturedImage item, int radius) {
         // Get the dimensions of the image
@@ -99,31 +95,6 @@ public class LeeFilter{
         // Return the filtered image
         return aux;
     }
-
-
-    private static int numberCells(CapturedImage item, int row, int col, int radius) {
-        int count = 0;
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                if ((row + i >= 0) && ((col + j >= 0) && (row + i < item.getHeight()) && (col + j < item.getWidth())))
-                    count++;
-            }
-        }
-        return count;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

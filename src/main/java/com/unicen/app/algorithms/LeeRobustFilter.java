@@ -4,18 +4,9 @@ import com.unicen.CapturedImage;
 
 public class LeeRobustFilter extends AlgorithmFilter{
 
-    public  CapturedImage execute(int [][] image){
-        return null;
-    }
-
     public static CapturedImage execute(CapturedImage item, int radius) {
-        // Aplicar el filtro median (equivalente a medianFilterHuang)
-
         int H = item.getHeight();
         int W = item.getWidth();
-
-        System.out.println("height:" + item.getHeight());
-        System.out.println("width:" + item.getWidth());
 
         CapturedImage aux = new CapturedImage(H, W, item.getDepth(), item.getChannels());
 
@@ -92,34 +83,5 @@ public class LeeRobustFilter extends AlgorithmFilter{
     }
 
 
-    private static int statisticOrder(int[] histogram, int n, int b, double p) {
-        double sum = 0;
-        for (int i = 0; i < b; i++) {
-            sum += histogram[i];
-            if (sum >= n * p)
-                return i;
-        }
-        return 0;
-    }
 
-    private static int statisticOrder(int[][] histogram, int row, int n, int b, double p) {
-        double sum = 0;
-        for (int i = 0; i < b; i++) {
-            sum += histogram[row][i];
-            if (sum >= n * p)
-                return i;
-        }
-        return 0;
-    }
-
-    private static int numberCells(CapturedImage item, int row, int col, int radius) {
-        int count = 0;
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                if ((row + i >= 0) && ((col + j >= 0) && (row + i < item.getHeight()) && (col + j < item.getWidth())))
-                    count++;
-            }
-        }
-        return count;
-    }
 }

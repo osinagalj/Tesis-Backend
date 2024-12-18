@@ -4,29 +4,19 @@ import com.unicen.CapturedImage;
 
 public class MedianFilterHuang extends AlgorithmFilter{
 
-    public  CapturedImage execute(int [][] image){
-        return null;
-    }
     public static CapturedImage execute(CapturedImage item, double k, int dist) {
         // Create a new CapturedImage instance
         CapturedImage aux = new CapturedImage(item.getHeight(), item.getWidth(), item.getDepth(), item.getChannels());
-
-        System.out.println("height:" + item.getHeight());
-        System.out.println("width:" + item.getWidth());
 
         // Create array histogram
         int[][] histogram = new int[item.getHeight()][256];
 
         // Initialize histogram with 0
-        System.out.println("Init histogram with 0");
-
         for (int row = 0; row < item.getHeight(); row++) {
             for (int col = 0; col < 256; col++) {
                 histogram[row][col] = 0;
             }
         }
-        System.out.println("Init histogram");
-
         // Initialize histogram with initial values
         int icol = 0;
         for (int row = 0; row < item.getHeight(); row++) {
@@ -35,19 +25,14 @@ public class MedianFilterHuang extends AlgorithmFilter{
                     if((row+i >= 0)&&((icol+j >= 0)&&(row+i < item.getHeight())&&(icol+j < item.getWidth())))
                         try{
                             histogram[row][item.getValueImage(row + i, icol + j)]++;
-
-                        }catch (Exception e){
-
+                        }
+                        catch (Exception e){
                             System.out.println(e);
-
-
                         }
                     }
                 }
         }
 
-
-        System.out.println("Algoritmo de huan:");
 
         // Algoritmo de Huang
         int nc = 0;
@@ -76,26 +61,11 @@ public class MedianFilterHuang extends AlgorithmFilter{
                 }
 
 
-
                 aux.setValueImage(row, col, i - 1);
             }
         }
 
-
-        System.out.println("Returning captured image");
         return aux;
-    }
-
-
-    private static int numberCells(CapturedImage item, int row, int col, int radius) {
-        int count = 0;
-        for (int i = -radius; i <= radius; i++) {
-            for (int j = -radius; j <= radius; j++) {
-                if ((row + i >= 0) && ((col + j >= 0) && (row + i < item.getHeight()) && (col + j < item.getWidth())))
-                    count++;
-            }
-        }
-        return count;
     }
 
 }

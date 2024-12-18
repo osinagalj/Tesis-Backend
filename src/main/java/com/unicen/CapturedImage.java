@@ -20,6 +20,12 @@ public class CapturedImage {
         this.imageValues = new int[width][height];
     }
 
+    public CapturedImage(int width, int height, int[][] imageValues) {
+        this.width = width;
+        this.height = height;
+        this.imageValues = imageValues;
+    }
+
     public CapturedImage() {
 
     }

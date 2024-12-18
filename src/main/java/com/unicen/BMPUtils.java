@@ -1,6 +1,7 @@
 package com.unicen;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +38,45 @@ public class BMPUtils {
         byte[] imageBytes = baos.toByteArray();
         baos.close();
         return imageBytes;
+    }
+
+    public  static byte[] removeHalfImage(InputStream imageStream, Color color) throws IOException {
+        // Leer la imagen del InputStream
+
+        System.out.println("Reading image");
+
+        BufferedImage image = ImageIO.read(imageStream);
+        var formats= ImageIO.getReaderFormatNames();
+        // Obtener la anchura y altura de la imagen
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        // Iterar a través de los píxeles y establecer la mitad de la imagen como negra
+        for (int y = 0; y < height; y++) {
+            for (int x = width / 2; x < width; x++) {
+                image.setRGB(x, y, color.getRGB());
+            }
+        }
+
+        // Guardar la imagen modificada
+        // Aquí puedes especificar la ruta y el formato de salida de la imagen modificada
+
+        String desktopPath = System.getProperty("user.home") + "\\Desktop\\";
+        String filePath = desktopPath + "test" + Math.random() + ".png";
+
+
+        // Crear un ByteArrayOutputStream para almacenar los bytes de la imagen
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        //ImageIO.write(image, "png", new File(filePath));
+        ImageIO.write(image, "png", outputStream);
+
+
+        // Obtener los bytes de la imagen del ByteArrayOutputStream
+        byte[] imageBytes = outputStream.toByteArray();
+
+        return imageBytes;
+
     }
 
 }
