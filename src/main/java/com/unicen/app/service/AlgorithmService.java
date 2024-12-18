@@ -71,7 +71,7 @@ public class AlgorithmService  {
         CapturedImage capturedImage = new CapturedImage(array[0].length, array.length, array);
 
         //Apply Median filter
-        CapturedImage newImage = MedianFilterHuang.execute(capturedImage, 0.3d, 1);
+        CapturedImage newImage = MedianFilterHuang.execute(capturedImage, 0.3d, ratio);
 
         BufferedImage bmpImage = convertCapturedImage(newImage);
         return saveProcessImage(originalExternalId, ratio, bmpImage, name, Algorithm.MEDIAN.getString());
