@@ -7,6 +7,8 @@ import com.unicen.app.algorithms.LeeRobustFilter;
 import com.unicen.app.algorithms.MedianFilterHuang;
 import com.unicen.app.dto.ProcessedImage;
 import com.unicen.app.model.Algorithm;
+import com.unicen.app.model.Indicator;
+import com.unicen.app.model.Metric;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.User;
 import com.unicen.core.services.UserService;
@@ -30,6 +32,9 @@ public class AlgorithmService  {
     @Autowired
     ResultService imageResultService;
 
+    @Autowired
+    MetricService metricService;
+
     public void process (Algorithm algorithm,String resourceExternalId, Integer ratioFrom, Integer ratioTo, User user) throws IOException {
         Integer ratio = ratioFrom;
         var image =  imageService.findByExternalIdAndFetchImageEagerly(resourceExternalId);
@@ -39,6 +44,21 @@ public class AlgorithmService  {
         InputStream is = new ByteArrayInputStream(image.get().getImageData());
 
         while(ratio < ratioTo + 1){
+
+            Metric metric = new Metric();
+            metric.setOriginalImageId(image.get());
+            metric.setRatio(1);
+            Indicator enl = new Indicator();
+            enl.setMf(0.1f);
+            enl.setLee(0.2f);
+            enl.setLeeR(0.3F);
+            enl.setNewLeeR(0.4f);
+            metric.setENL(enl);
+
+            metric.setSSI(enl);
+            metricService.save(metric);
+
+            var all = metricService.findAll();
 
             List<ProcessedImage> response = algorithm.process(resourceExternalId, is, ratio, image.get().getName());
             is.reset();
