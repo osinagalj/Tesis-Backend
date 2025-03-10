@@ -39,6 +39,16 @@ public enum Algorithm {
             return Arrays.asList(algorithmService.algorithmMedian(image, ratio, resourceExternalId, name));
         }
     },
+    NEW_LEE_ROBUST {
+        @Override
+        public String getString(){
+            return "NEW_LEE_ROBUST";
+        }
+        @Override
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name, AlgorithmService algorithmService) throws IOException {
+            return Arrays.asList(algorithmService.algorithmNewRobustLee(image, ratio, resourceExternalId, name));
+        }
+    },
     ALL {
         @Override
         public String getString(){

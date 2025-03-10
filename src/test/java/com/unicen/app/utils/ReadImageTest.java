@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Date;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 public class ReadImageTest {
 
@@ -30,6 +34,65 @@ public class ReadImageTest {
     public static String DESTINATION_JPG_TO_BMP_PATH = "src/test/resources/static/generated/01_jpg_to_bmp" + random + ".bmp";
     public static String READ_DESTINATION_JPG_TO_BMP_PATH = "/static/generated/01_jpg_to_bmp" + random + ".bmp";
 
+
+    // Método para convertir BufferedImage a Mat
+    public static Mat bufferedImageToMat(BufferedImage bufferedImage) {
+        // Crear un objeto Mat de OpenCV
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+        Mat mat = new Mat(height, width, CvType.CV_8UC3);
+
+        // Obtener los píxeles del BufferedImage y copiarlos a Mat
+        int[] data = new int[width * height];
+        bufferedImage.getRGB(0, 0, width, height, data, 0, width);
+
+        // Convertir el arreglo de datos a un arreglo de bytes en formato OpenCV
+        byte[] byteArray = new byte[3 * width * height];
+        for (int i = 0; i < data.length; i++) {
+            int pixel = data[i];
+            byteArray[3 * i] = (byte) ((pixel >> 16) & 0xFF);  // R
+            byteArray[3 * i + 1] = (byte) ((pixel >> 8) & 0xFF);   // G
+            byteArray[3 * i + 2] = (byte) (pixel & 0xFF);   // B
+        }
+
+        // Colocar los datos en el objeto Mat
+        mat.put(0, 0, byteArray);
+
+        return mat;
+    }
+
+    // We need to use this file type bc it doens loss information when we manipulate teh data
+    @Test
+    public void readMatImage() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        BufferedImage pngImage = ImageIO.read(inputStream);
+        var type =  pngImage.getType();
+
+        // Crear una nueva imagen en formato BMP
+        BufferedImage bmpImage = new BufferedImage(
+                pngImage.getWidth(),
+                pngImage.getHeight(),
+                pngImage.getType());//TODO BufferedImage.TYPE_BYTE_GRAY //for 8 bits
+
+        Mat matImage = Imgcodecs.imread("path/to/your/image.jpg");
+
+        // Verificar que la imagen se haya cargado correctamente
+        if (matImage.empty()) {
+            System.out.println("Error al cargar la imagen.");
+            return;
+        }
+
+        System.out.println("Imagen cargada correctamente: " + matImage.size());
+
+        // Puedes ahora trabajar con la imagen en formato Mat
+        // Ejemplo: realizar una operación de transformación en la imagen
+        Mat transformedImage = new Mat();
+        Core.transpose(matImage, transformedImage);  // Transponer la imagen
+        System.out.println("Imagen transpuesta correctamente.");
+
+        // Guardar la imagen procesada
+        Imgcodecs.imwrite("path/to/your/output_image.jpg", transformedImage);
+    }
 
     //This tests reduce the size of the image using ImageIO
     // We need to use this file type bc it doens loss information when we manipulate teh data

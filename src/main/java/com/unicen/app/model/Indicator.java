@@ -18,6 +18,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Indicator extends AuditableModel<Indicator> {
 
+    @Column(name = "name")
+    private String name;
+
+    public Indicator(String name) {
+        this.name = name;
+    }
+
     @Column(name = "mf")
     private Float mf;
 
@@ -35,6 +42,8 @@ public class Indicator extends AuditableModel<Indicator> {
 
     @OneToOne(mappedBy = "SSI", fetch = FetchType.LAZY)
     private Metric metricSSI;
+
+
 }
 
 
