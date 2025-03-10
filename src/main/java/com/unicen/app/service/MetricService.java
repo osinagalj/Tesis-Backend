@@ -25,6 +25,7 @@ public class MetricService extends PublicObjectCrudService<Metric, MetricReposit
     private static Logger LOGGER = LoggerFactory.getLogger(GlobalApplicationContext.class);
 
 
+
     public MetricService(MetricRepository repository) {
         super(repository);
 
@@ -43,13 +44,29 @@ public class MetricService extends PublicObjectCrudService<Metric, MetricReposit
 
 
     @Transactional(readOnly = true)
-    public Page<Metric> findPageImages(Long externalId, int page, int pageSize, Sort.Direction order, String... propertiesToOrder) {
+    public Page<Metric> findPageImages(String externalId, int page, int pageSize, Sort.Direction order, String... propertiesToOrder) {
         Sort sortBy = Sort.by(order, propertiesToOrder);
-        Specification<Result> spec = (root, query, cb) -> cb.equal(root.get("originalImageId"), externalId);
-        // Obtiene la primera página de imágenes del repositorio
-        Page<Metric> imagePage = repository.findAll(spec, PageRequest.of(page, pageSize, sortBy));
 
-        return imagePage;
+        PageRequest pageRequest = PageRequest.of(page, pageSize, sortBy); // Obtener solo el primer resultado
+
+        Page<Metric> metricPage = repository.findAll((root, query, cb) ->
+                cb.and(
+                        cb.equal(root.get("originalImageId").get("externalId"), externalId)
+                ), pageRequest);
+
+        return metricPage;
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Metric> findByOriginalImageIdAndRatio(Long originalImageId, int ratio) {
+        PageRequest pageRequest = PageRequest.of(0, 1); // Obtener solo el primer resultado
+        Page<Metric> page = repository.findAll((root, query, cb) ->
+                cb.and(
+                        cb.equal(root.get("originalImageId").get("id"), originalImageId),
+                        cb.equal(root.get("ratio"), ratio)
+                ), pageRequest);
+
+        return page.hasContent() ? Optional.of(page.getContent().get(0)) : Optional.empty();
     }
 
 }

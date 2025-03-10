@@ -15,8 +15,8 @@ public enum Algorithm {
             return "LEE";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
-            return Arrays.asList(AlgorithmService.algorithmLee(image, ratio, resourceExternalId, name));
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name,  AlgorithmService algorithmService) throws IOException {
+            return Arrays.asList(algorithmService.algorithmLee(image, ratio, resourceExternalId, name));
         }
     },
     ROBUST_LEE {
@@ -25,8 +25,8 @@ public enum Algorithm {
             return "ROBUST_LEE";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
-            return Arrays.asList(AlgorithmService.algorithmRobustLee(image, ratio, resourceExternalId, name));
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name, AlgorithmService algorithmService) throws IOException {
+            return Arrays.asList(algorithmService.algorithmRobustLee(image, ratio, resourceExternalId, name));
         }
     },
     MEDIAN {
@@ -35,8 +35,8 @@ public enum Algorithm {
             return "MEDIAN";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
-            return Arrays.asList(AlgorithmService.algorithmMedian(image, ratio, resourceExternalId, name));
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name, AlgorithmService algorithmService) throws IOException {
+            return Arrays.asList(algorithmService.algorithmMedian(image, ratio, resourceExternalId, name));
         }
     },
     ALL {
@@ -45,12 +45,12 @@ public enum Algorithm {
             return "ALL";
         }
         @Override
-        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException {
+        public List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name,  AlgorithmService algorithmService) throws IOException {
             List<ProcessedImage> result = new ArrayList<>();
             //Use functional programming
             for (Algorithm algorithm : Algorithm.values()) {
                 if (algorithm != Algorithm.ALL) {
-                    result.addAll(algorithm.process(resourceExternalId, image, ratio, name));
+                    result.addAll(algorithm.process(resourceExternalId, image, ratio, name, algorithmService));
                     image.reset();
                 }
             }
@@ -59,6 +59,6 @@ public enum Algorithm {
     };
 
     public abstract String getString();
-    public abstract List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name) throws IOException;
+    public abstract List<ProcessedImage> process(String resourceExternalId, InputStream image, Integer ratio, String name,  AlgorithmService algorithmService) throws IOException;
 
 }

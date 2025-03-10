@@ -10,7 +10,17 @@ import lombok.*;
 @AllArgsConstructor
 public class MetricDTO implements DtoAble<MetricDTO> {
     Long OriginalId;
-    int radius;
-    Indicator PSNR;
-    Indicator ENL;
+    int ratio;
+    IndicatorDTO PSNR;
+    IndicatorDTO SSI;
+    IndicatorDTO ENL;
+    IndicatorDTO SMPI;
+    // Nuevos indicadores
+    IndicatorDTO SSIM;
+    IndicatorDTO SRS;
+    IndicatorDTO MACANA;
+    IndicatorDTO ENTROPY;
+    IndicatorDTO LUMINANCE;
+    IndicatorDTO CONTRAST;
+    IndicatorDTO STRUCTURE;
 }

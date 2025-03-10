@@ -1,5 +1,6 @@
 package com.unicen.app.repository;
 
+import com.unicen.app.model.Image;
 import com.unicen.app.model.Indicator;
 import com.unicen.app.model.Metric;
 import com.unicen.app.model.Result;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface MetricRepository extends PublicObjectRepository<Metric, Long> {
-    Page<Metric> findAll(Specification<Result> spec, Pageable pageable);
+public interface IndicatorRepository extends PublicObjectRepository<Indicator, Long> {
 
-    @Query("SELECT m FROM Metric m WHERE m.originalImageId.id = :originalImageId AND m.ratio = :ratio")
-    Optional<Metric> findByOriginalImageIdAndRatio(@Param("originalImageId") Long originalImageId, @Param("ratio") int ratio);
+
 }

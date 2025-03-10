@@ -43,6 +43,8 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
      */
     private String oneTimeAdminSecret;
 
+
+
     public UserService(UserRepository repository, UserPasswordEncoder encoder, ImageService imageService, @Lazy AccessRoleService accessRoleService, AuthenticationTokenService authenticationTokenService) {
         super(repository);
         this.userPasswordEncoder = encoder;
@@ -51,6 +53,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         this.authenticationTokenService = authenticationTokenService;
         this.oneTimeAdminSecret = generateOneTimeAdminSecret();
     }
+
 
 /*
     @Transactional

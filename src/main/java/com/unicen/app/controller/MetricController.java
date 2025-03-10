@@ -28,7 +28,7 @@ import java.io.IOException;
 
 @Controller
 @PreAuthorize("permitAll")
-@Api(tags = "3. Algorithms")
+@Api(tags = "10. Metrics")
 @RequestMapping("/metric")
 public class MetricController extends GenericController<Metric, MetricDTO> {
 
@@ -51,10 +51,12 @@ public class MetricController extends GenericController<Metric, MetricDTO> {
 
     @GetMapping("/getAll")
     @ResponseBody
-    public ResponseEntity<ApiResultDTO<Page<MetricDTO>>> getImagesForUser(@RequestParam("imageExternalId") Long imageExternalId, @RequestParam(defaultValue = "0") Integer page,
+    public ResponseEntity<ApiResultDTO<Page<MetricDTO>>> getMetrics(@RequestParam("imageExternalId") String imageExternalId, @RequestParam(defaultValue = "0") Integer page,
                                                                                @RequestParam(defaultValue = "5") Integer pageSize) throws IOException {
         GenericAuthenticationToken authentication = (GenericAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getById((long)authentication.getPrincipal());
-        return pageResult(service.findPageImages(imageExternalId, page, pageSize, Sort.Direction.DESC, "createdAt"));
+        var metrics = service.findPageImages(imageExternalId, page, pageSize, Sort.Direction.ASC, "ratio");
+
+        return pageResult(service.findPageImages(imageExternalId, page, pageSize, Sort.Direction.ASC, "ratio"));
     }
 }

@@ -9,7 +9,7 @@ application:
 
 spring:
   liquibase:
-    enabled: true
+    enabled: false
   datasource:
     url: jdbc:h2:mem:mydatabase
     username: sa
