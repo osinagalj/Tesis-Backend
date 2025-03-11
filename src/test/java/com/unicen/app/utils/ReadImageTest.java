@@ -1,5 +1,6 @@
 package com.unicen.app.utils;
 
+import com.unicen.AppApplication;
 import org.junit.jupiter.api.Test;
 
 import javax.imageio.*;
@@ -11,12 +12,18 @@ import java.util.Date;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.springframework.boot.SpringApplication;
 
 public class ReadImageTest {
 
     public static long random = new Date().getTime();
     public static String ORIGINAL_IMAGE = "/static/generated/01.jpg";
+
+    public static String RESULT_ORIGINAL_IMAGE = "/static/results/01/Lee_5.png";
+
 
     public static String ORIGINAL_IMAGE_JPG_24_BITS = "/static/originals/09.jpg";
 
@@ -35,8 +42,30 @@ public class ReadImageTest {
     public static String READ_DESTINATION_JPG_TO_BMP_PATH = "/static/generated/01_jpg_to_bmp" + random + ".bmp";
 
 
+    static {
+        // Cargar la librería nativa de OpenCV
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
+
+
+    @Test
+    public void readMatImage() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        InputStream resultinputStream = getClass().getResourceAsStream(RESULT_ORIGINAL_IMAGE);
+
+        BufferedImage pngImage = ImageIO.read(inputStream);
+        BufferedImage result = ImageIO.read(resultinputStream);
+
+        var v = getPNSR(pngImage, result);
+        System.out.println("Value: " + v);
+
+    }
+
+
     // Método para convertir BufferedImage a Mat
     public static Mat bufferedImageToMat(BufferedImage bufferedImage) {
+        System.out.println("OPENCV" + org.opencv.core.Core.VERSION);
+
         // Crear un objeto Mat de OpenCV
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();
@@ -61,37 +90,65 @@ public class ReadImageTest {
         return mat;
     }
 
-    // We need to use this file type bc it doens loss information when we manipulate teh data
-    @Test
-    public void readMatImage() throws Exception {
-        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
-        BufferedImage pngImage = ImageIO.read(inputStream);
-        var type =  pngImage.getType();
-
-        // Crear una nueva imagen en formato BMP
-        BufferedImage bmpImage = new BufferedImage(
-                pngImage.getWidth(),
-                pngImage.getHeight(),
-                pngImage.getType());//TODO BufferedImage.TYPE_BYTE_GRAY //for 8 bits
-
-        Mat matImage = Imgcodecs.imread("path/to/your/image.jpg");
-
-        // Verificar que la imagen se haya cargado correctamente
-        if (matImage.empty()) {
-            System.out.println("Error al cargar la imagen.");
-            return;
+    public static BufferedImage matToBufferedImage(Mat mat) {
+        // Si la imagen es en escala de grises, la convertimos a un BufferedImage de un solo canal
+        if (mat.channels() == 1) {
+            BufferedImage image = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_BYTE_GRAY);
+            byte[] data = new byte[mat.width() * mat.height()];
+            mat.get(0, 0, data);
+            image.getRaster().setDataElements(0, 0, mat.width(), mat.height(), data);
+            return image;
         }
 
-        System.out.println("Imagen cargada correctamente: " + matImage.size());
+        // Si la imagen es en color (BGR), la convertimos a un BufferedImage de tipo RGB
+        int width = mat.width();
+        int height = mat.height();
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
-        // Puedes ahora trabajar con la imagen en formato Mat
-        // Ejemplo: realizar una operación de transformación en la imagen
-        Mat transformedImage = new Mat();
-        Core.transpose(matImage, transformedImage);  // Transponer la imagen
-        System.out.println("Imagen transpuesta correctamente.");
+        // Obtener los datos de la Mat
+        byte[] data = new byte[width * height * (int)mat.elemSize()];
+        mat.get(0, 0, data);
 
-        // Guardar la imagen procesada
-        Imgcodecs.imwrite("path/to/your/output_image.jpg", transformedImage);
+        // Colocar los datos de la Mat en la imagen
+        image.getRaster().setDataElements(0, 0, width, height, data);
+
+        return image;
+    }
+
+    // We need to use this file type bc it doens loss information when we manipulate teh data
+
+    public double getPNSR(BufferedImage original, BufferedImage result){
+        Mat I1 = bufferedImageToMat(original);
+        Mat I2 = bufferedImageToMat(result);
+
+        // Make sure images have the same size and type
+        if (I1.size().equals(I2.size()) && I1.type() == I2.type()) {
+
+            // Compute absolute difference between images
+            Mat s1 = new Mat();
+            Core.absdiff(I1, I2, s1);  // |I1 - I2|
+
+            s1.convertTo(s1, CvType.CV_32F);  // Convert to 32-bit float
+            s1 = s1.mul(s1);  // |I1 - I2|^2
+
+            // Sum all channels
+            Scalar s = Core.sumElems(s1);  // Sum of elements per channel
+
+            double sse = s.val[0] + s.val[1] + s.val[2];  // Sum of channels
+
+            // If sum of squared error (sse) is close to zero, return 0
+            if (sse <= 1e-10) {
+                return 0;
+            } else {
+                // Calculate MSE (Mean Squared Error)
+                double mse = sse / (double) (I1.channels() * I1.total());
+                // Calculate PSNR
+                double psnr = 10.0 * Math.log10((255 * 255) / mse);
+                return psnr;
+            }
+        } else {
+            throw new IllegalArgumentException("The images must have the same size and type.");
+        }
     }
 
     //This tests reduce the size of the image using ImageIO

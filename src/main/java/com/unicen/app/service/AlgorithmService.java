@@ -14,6 +14,8 @@ import com.unicen.app.model.Metric;
 import com.unicen.core.exceptions.CoreApiException;
 import com.unicen.core.model.User;
 import com.unicen.core.services.UserService;
+import org.opencv.core.*;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +26,11 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.List;
 
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
 import static com.unicen.BMPUtils.convertBMPToArray;
+import static com.unicen.app.service.Metrics.*;
 
 
 @Service
@@ -75,7 +74,7 @@ public class AlgorithmService  {
     }
 
     @Transactional
-    public void createMetric(Image original, CapturedImage result, int i, boolean median, boolean lee, boolean leeR, boolean newLeeR) {
+    public void createMetric(Image original, CapturedImage original_capture, CapturedImage result, int i, boolean median, boolean lee, boolean leeR, boolean newLeeR) {
         // Intentar obtener la métrica existente
         var existingMetric = metricService.findByOriginalImageIdAndRatio(original.getId(), i);
 
@@ -95,11 +94,11 @@ public class AlgorithmService  {
             Indicator indicatorSTRUCTURE = existingMetric.get().getSTRUCTURE();
 
             // Actualizar solo los valores correspondientes según los booleanos
-            updateIndicatorValues(median, lee, leeR, newLeeR, original, result, i, indicatorENL, indicatorSSI, indicatorSMPI, indicatorSSIM, indicatorSRS, indicatorMACANA, indicatorENTROPY, indicatorLUMINANCE, indicatorCONTRAST, indicatorSTRUCTURE, indicatorPSNR);
+            updateIndicatorValues(median, lee, leeR, newLeeR, original, original_capture, result, i, indicatorENL, indicatorSSI, indicatorSMPI, indicatorSSIM, indicatorSRS, indicatorMACANA, indicatorENTROPY, indicatorLUMINANCE, indicatorCONTRAST, indicatorSTRUCTURE, indicatorPSNR);
 
         } else {
             // Si no existe la métrica, creamos una nueva
-            Metric metric = createNewMetric(original, result, i, median, lee, leeR, newLeeR);
+            Metric metric = createNewMetric(original,original_capture,  result, i, median, lee, leeR, newLeeR);
 
             // Guardamos la nueva métrica
             metricService.save(metric);
@@ -109,30 +108,30 @@ public class AlgorithmService  {
 
 
     private void updateIndicatorValues( boolean median, boolean lee, boolean leeR, boolean newLeeR,
-                                       Image original, CapturedImage result, int i, Indicator... indicators) {
+                                       Image original,CapturedImage original_capture, CapturedImage result, int i, Indicator... indicators) {
         // Actualizamos los indicadores según los flags pasados
 
         if (lee) {
-            updateIndicatorField(indicators, original, result, i, "Lee");
+            updateIndicatorField(indicators, original,original_capture,  result, i, "Lee");
         }
         if (median) {
-            updateIndicatorField(indicators, original,result, i, "Mf");
+            updateIndicatorField(indicators, original,original_capture, result, i, "Mf");
         }
         if (leeR) {
-            updateIndicatorField(indicators, original, result,i, "LeeR");
+            updateIndicatorField(indicators, original,original_capture,  result,i, "LeeR");
         }
         if (newLeeR) {
-            updateIndicatorField(indicators, original,result, i, "NewLeeR");
+            updateIndicatorField(indicators, original,original_capture, result, i, "NewLeeR");
         }
 
         // Guardamos los cambios de indicadores solo si no son null
         saveNonNullIndicators(indicators);
     }
 
-    private void updateIndicatorField(Indicator[] indicators, Image original, CapturedImage result, int i, String field) {
+    private void updateIndicatorField(Indicator[] indicators, Image original, CapturedImage original_capture, CapturedImage result, int i, String field) {
         for (Indicator indicator : indicators) {
             if (indicator != null) {
-                float value = calculateIndicatorValue(original, result, i, indicator);
+                float value = calculateIndicatorValue(original,original_capture, result, i, indicator);
                 switch (field) {
                     case "Lee":
                         indicator.setLee(value);
@@ -143,50 +142,50 @@ public class AlgorithmService  {
                     case "LeeR":
                         indicator.setLeeR(value);
                         break;
-                    case "NewLeeR":
-                        indicator.setNewLeeR(value);
-                        break;
+//                    case "NewLeeR":
+//                        indicator.setNewLeeR(value);
+//                        break;
                 }
             }
         }
     }
 
-    private float calculateIndicatorValue(Image original, CapturedImage result, int i, Indicator indicator) {
+    private float calculateIndicatorValue(Image original,CapturedImage original_capture,  CapturedImage result, int i, Indicator indicator) {
         String name = indicator.getName();
 
         // Aquí definimos los cálculos específicos de cada indicador
         if(name.equals("ENL")){
-            return ENL(original, result, i); // Calculamos ENL
+            return ENL(original_capture, result, i); // Calculamos ENL
         }
         if(name.equals("PSNR")){
-            return PSNR(original, result, i); // Calculamos PSNR
+            return PSNR(original_capture, result, i); // Calculamos PSNR
         }
         if(name.equals("SSI")){
-            return SSI(original, result, i); // Calculamos SSI
+            return SSI(original_capture, result, i); // Calculamos SSI
         }
         if(name.equals("SMPI")){
-            return SMPI(original, result, i); // Calculamos SMPI
+            return SMPI(original_capture, result, i); // Calculamos SMPI
         }
         if(name.equals("SSIM")){
-            return SSIM(original, result, i); // Calculamos SSIM
+            return SSIM(original_capture, result, i); // Calculamos SSIM
         }
         if(name.equals("SRS")){
-            return SRS(original, result, i); // Calculamos SRS
+            return SRS(original_capture, result, i); // Calculamos SRS
         }
         if(name.equals("MACANA")){
-            return MACANA(original, result, i); // Calculamos MACANA
+            return MACANA(original_capture, result, i); // Calculamos MACANA
         }
         if(name.equals("ENTROPY")){
-            return ENTROPY(original, result, i); // Calculamos ENTROPY
+            return ENTROPY(original_capture, result, i); // Calculamos ENTROPY
         }
         if(name.equals("LUMINANCE")){
-            return LUMINANCE(original, result, i); // Calculamos LUMINANCE
+            return LUMINANCE(original_capture, result, i); // Calculamos LUMINANCE
         }
         if(name.equals("CONTRAST")){
-            return CONTRAST(original, result, i); // Calculamos CONTRAST
+            return CONTRAST(original_capture, result, i); // Calculamos CONTRAST
         }
         if(name.equals("STRUCTURE")){
-            return STRUCTURE(original, result, i); // Calculamos STRUCTURE
+            return STRUCTURE(original_capture, result, i); // Calculamos STRUCTURE
         }
 
         // Si no es ninguno de los anteriores, devolvemos un valor por defecto
@@ -202,7 +201,7 @@ public class AlgorithmService  {
         }
     }
 
-    private Metric createNewMetric(Image original, CapturedImage result,  int i, boolean median, boolean lee, boolean leeR, boolean newLeeR) {
+    private Metric createNewMetric(Image original, CapturedImage original_capture,  CapturedImage result,  int i, boolean median, boolean lee, boolean leeR, boolean newLeeR) {
         // Crear un nuevo objeto Metric
         Metric metric = new Metric();
         metric.setOriginalImageId(original);
@@ -222,56 +221,56 @@ public class AlgorithmService  {
 //        Indicator indicatorSTRUCTURE = new Indicator();
 
         if (lee) {
-            indicatorPSNR.setLee(PSNR(original, result, i));
-            indicatorENL.setLee(ENL(original, result, i));
-            indicatorSSI.setLee(SSI(original, result, i));
-            indicatorSMPI.setLee(SMPI(original, result, i)); // Usando el método adecuado
-            indicatorSSIM.setLee(SSIM(original, result, i)); // Usando el método adecuado
-            indicatorSRS.setLee(SRS(original, result, i));   // Usando el método adecuado
-            indicatorMACANA.setLee(MACANA(original, result, i)); // Usando el método adecuado
-            indicatorENTROPY.setLee(ENTROPY(original, result, i)); // Usando el método adecuado
-            indicatorLUMINANCE.setLee(LUMINANCE(original, result, i)); // Usando el método adecuado
-            indicatorCONTRAST.setLee(CONTRAST(original, result, i)); // Usando el método adecuado
+            indicatorPSNR.setLee(PSNR(original_capture, result, i));
+            indicatorENL.setLee(ENL(original_capture, result, i));
+            indicatorSSI.setLee(SSI(original_capture, result, i));
+            indicatorSMPI.setLee(SMPI(original_capture, result, i)); // Usando el método adecuado
+            indicatorSSIM.setLee(SSIM(original_capture, result, i)); // Usando el método adecuado
+            indicatorSRS.setLee(SRS(original_capture, result, i));   // Usando el método adecuado
+            indicatorMACANA.setLee(MACANA(original_capture, result, i)); // Usando el método adecuado
+            indicatorENTROPY.setLee(ENTROPY(original_capture, result, i)); // Usando el método adecuado
+            indicatorLUMINANCE.setLee(LUMINANCE(original_capture, result, i)); // Usando el método adecuado
+            indicatorCONTRAST.setLee(CONTRAST(original_capture, result, i)); // Usando el método adecuado
         }
 
         if (median) {
-            indicatorPSNR.setMf(PSNR(original, result, i));
-            indicatorENL.setMf(ENL(original, result, i));
-            indicatorSSI.setMf(SSI(original, result, i));
-            indicatorSMPI.setMf(SMPI(original, result, i)); // Usando el método adecuado
-            indicatorSSIM.setMf(SSIM(original, result, i)); // Usando el método adecuado
-            indicatorSRS.setMf(SRS(original, result, i));   // Usando el método adecuado
-            indicatorMACANA.setMf(MACANA(original, result, i)); // Usando el método adecuado
-            indicatorENTROPY.setMf(ENTROPY(original, result, i)); // Usando el método adecuado
-            indicatorLUMINANCE.setMf(LUMINANCE(original, result, i)); // Usando el método adecuado
-            indicatorCONTRAST.setMf(CONTRAST(original, result, i)); // Usando el método adecuado
+            indicatorPSNR.setMf(PSNR(original_capture, result, i));
+            indicatorENL.setMf(ENL(original_capture, result, i));
+            indicatorSSI.setMf(SSI(original_capture, result, i));
+            indicatorSMPI.setMf(SMPI(original_capture, result, i)); // Usando el método adecuado
+            indicatorSSIM.setMf(SSIM(original_capture, result, i)); // Usando el método adecuado
+            indicatorSRS.setMf(SRS(original_capture, result, i));   // Usando el método adecuado
+            indicatorMACANA.setMf(MACANA(original_capture, result, i)); // Usando el método adecuado
+            indicatorENTROPY.setMf(ENTROPY(original_capture, result, i)); // Usando el método adecuado
+            indicatorLUMINANCE.setMf(LUMINANCE(original_capture, result, i)); // Usando el método adecuado
+            indicatorCONTRAST.setMf(CONTRAST(original_capture, result, i)); // Usando el método adecuado
         }
 
         if (leeR) {
-            indicatorPSNR.setLeeR(PSNR(original, result, i));
-            indicatorENL.setLeeR(ENL(original, result, i));
-            indicatorSSI.setLeeR(SSI(original, result, i));
-            indicatorSMPI.setLeeR(SMPI(original, result, i)); // Usando el método adecuado
-            indicatorSSIM.setLeeR(SSIM(original, result, i)); // Usando el método adecuado
-            indicatorSRS.setLeeR(SRS(original, result, i));   // Usando el método adecuado
-            indicatorMACANA.setLeeR(MACANA(original, result, i)); // Usando el método adecuado
-            indicatorENTROPY.setLeeR(ENTROPY(original, result, i)); // Usando el método adecuado
-            indicatorLUMINANCE.setLeeR(LUMINANCE(original, result, i)); // Usando el método adecuado
-            indicatorCONTRAST.setLeeR(CONTRAST(original, result, i)); // Usando el método adecuado
+            indicatorPSNR.setLeeR(PSNR(original_capture, result, i));
+            indicatorENL.setLeeR(ENL(original_capture, result, i));
+            indicatorSSI.setLeeR(SSI(original_capture, result, i));
+            indicatorSMPI.setLeeR(SMPI(original_capture, result, i)); // Usando el método adecuado
+            indicatorSSIM.setLeeR(SSIM(original_capture, result, i)); // Usando el método adecuado
+            indicatorSRS.setLeeR(SRS(original_capture, result, i));   // Usando el método adecuado
+            indicatorMACANA.setLeeR(MACANA(original_capture, result, i)); // Usando el método adecuado
+            indicatorENTROPY.setLeeR(ENTROPY(original_capture, result, i)); // Usando el método adecuado
+            indicatorLUMINANCE.setLeeR(LUMINANCE(original_capture, result, i)); // Usando el método adecuado
+            indicatorCONTRAST.setLeeR(CONTRAST(original_capture, result, i)); // Usando el método adecuado
         }
 
-        if (newLeeR) {
-            indicatorPSNR.setNewLeeR(PSNR(original, result, i));
-            indicatorENL.setNewLeeR(ENL(original, result, i));
-            indicatorSSI.setNewLeeR(SSI(original, result, i));
-            indicatorSMPI.setNewLeeR(SMPI(original, result, i)); // Usando el método adecuado
-            indicatorSSIM.setNewLeeR(SSIM(original, result, i)); // Usando el método adecuado
-            indicatorSRS.setNewLeeR(SRS(original, result, i));   // Usando el método adecuado
-            indicatorMACANA.setNewLeeR(MACANA(original, result, i)); // Usando el método adecuado
-            indicatorENTROPY.setNewLeeR(ENTROPY(original, result, i)); // Usando el método adecuado
-            indicatorLUMINANCE.setNewLeeR(LUMINANCE(original, result, i)); // Usando el método adecuado
-            indicatorCONTRAST.setNewLeeR(CONTRAST(original, result, i)); // Usando el método adecuado
-        }
+//        if (newLeeR) {
+//            indicatorPSNR.setNewLeeR(PSNR(original, result, i));
+//            indicatorENL.setNewLeeR(ENL(original, result, i));
+//            indicatorSSI.setNewLeeR(SSI(original, result, i));
+//            indicatorSMPI.setNewLeeR(SMPI(original, result, i)); // Usando el método adecuado
+//            indicatorSSIM.setNewLeeR(SSIM(original, result, i)); // Usando el método adecuado
+//            indicatorSRS.setNewLeeR(SRS(original, result, i));   // Usando el método adecuado
+//            indicatorMACANA.setNewLeeR(MACANA(original, result, i)); // Usando el método adecuado
+//            indicatorENTROPY.setNewLeeR(ENTROPY(original, result, i)); // Usando el método adecuado
+//            indicatorLUMINANCE.setNewLeeR(LUMINANCE(original, result, i)); // Usando el método adecuado
+//            indicatorCONTRAST.setNewLeeR(CONTRAST(original, result, i)); // Usando el método adecuado
+//        }
 
         indicatorService.save(indicatorPSNR);
         indicatorService.save(indicatorENL);
@@ -303,65 +302,6 @@ public class AlgorithmService  {
     }
 
 
-    public static float PSNR(Image original, CapturedImage result, int i) {
-        //        IplImage *im2 = image2->getImage();
-//
-//        Mat I1 = cvarrToMat(im1);
-//        Mat I2 = cvarrToMat(im2);
-//
-//        Mat s1;
-//        absdiff(I1, I2, s1);       // |I1 - I2|
-//        s1.convertTo(s1, CV_32F);  // cannot make a square on 8 bits
-//        s1 = s1.mul(s1);           // |I1 - I2|^2
-//
-//        Scalar s = cv::sum( s1 );         // sum elements per channel
-//
-//        double sse = s.val[0] + s.val[1] + s.val[2]; // sum channels
-//
-//        if( sse <= 1e-10) // for small values return zero
-//            return 0;
-//        else{
-//            double  mse = sse / (double(I1.channels()) * double(I1.total()));
-//            double psnr = 10.0*log10((255*255)/mse);
-//            return psnr;
-//        }
-
-        return 0.1f;
-    }
-    public static float ENL(Image originalExternalId, CapturedImage result, int i) {
-        return 0.2f;
-    }
-
-    public float SSI(Image originalExternalId, CapturedImage result, int i) {
-        return 0.3f;
-    }
-
-
-    public float SMPI(Image originalExternalId, CapturedImage result, int i) {
-        return 0.35f;
-    }
-    public float SSIM(Image originalExternalId, CapturedImage result, int i) {
-        return 0.4f;
-    }
-
-    public float SRS(Image originalExternalId, CapturedImage result, int i) {
-        return 0.5f;
-    }
-    public float MACANA(Image originalExternalId, CapturedImage result, int i) {
-        return 0.6f;
-    }
-    public float ENTROPY(Image original, CapturedImage result, int i) {
-        return 0.7f;
-    }
-    public float LUMINANCE(Image original, CapturedImage result, int i) {
-        return 0.8f;
-    }
-    public float CONTRAST(Image original, CapturedImage result, int i) {
-        return 0.9f;
-    }
-    public float STRUCTURE(Image original, CapturedImage result, int i) {
-        return 0.10f;
-    }
 
 
 
@@ -376,7 +316,7 @@ public class AlgorithmService  {
 
 
         var imageId =  imageService.findByExternalIdAndFetchImageEagerly(originalExternalId);
-        createMetric(imageId.get(), null, ratio, false, true, false, false);
+        createMetric(imageId.get(), capturedImage, newImage, ratio, false, true, false, false);
 
         return saveProcessImage(originalExternalId, ratio, bmpImage, name, Algorithm.LEE.getString());
     }
@@ -387,11 +327,12 @@ public class AlgorithmService  {
 
         //Apply Median filter
         CapturedImage newImage = MedianFilterHuang.execute(capturedImage, 0.3d, ratio);
+        BufferedImage bmpImage = convertCapturedImage(newImage);
+
 
         var imageId =  imageService.findByExternalIdAndFetchImageEagerly(originalExternalId);
-        createMetric(imageId.get(), null, ratio, true, false, false, false);
+        createMetric(imageId.get(), capturedImage, newImage, ratio, true, false, false, false);
 
-        BufferedImage bmpImage = convertCapturedImage(newImage);
         return saveProcessImage(originalExternalId, ratio, bmpImage, name, Algorithm.MEDIAN.getString());
     }
 
@@ -401,11 +342,11 @@ public class AlgorithmService  {
 
         //Apply Median filter
         CapturedImage newImage = LeeRobustFilter.execute(capturedImage, ratio);
+        BufferedImage bmpImage = convertCapturedImage(newImage);
 
         var imageId =  imageService.findByExternalIdAndFetchImageEagerly(originalExternalId);
-        createMetric(imageId.get(), null, ratio, false, false, true, false);
+        createMetric(imageId.get(), capturedImage,  newImage, ratio, false, false, true, false);
 
-        BufferedImage bmpImage = convertCapturedImage(newImage);
         return saveProcessImage(originalExternalId, ratio, bmpImage, name, Algorithm.ROBUST_LEE.getString());
 
     }
@@ -416,11 +357,11 @@ public class AlgorithmService  {
 
         //Apply Median filter
         CapturedImage newImage = NewLeeRobustFilter.execute(capturedImage, ratio);
+        BufferedImage bmpImage = convertCapturedImage(newImage);
 
         var imageId =  imageService.findByExternalIdAndFetchImageEagerly(originalExternalId);
-        createMetric(imageId.get(), null, ratio, false, false, false, true);
+        createMetric(imageId.get(),capturedImage, newImage, ratio, false, false, false, true);
 
-        BufferedImage bmpImage = convertCapturedImage(newImage);
         return saveProcessImage(originalExternalId, ratio, bmpImage, name, Algorithm.NEW_LEE_ROBUST.getString());
 
     }

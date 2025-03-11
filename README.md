@@ -38,3 +38,12 @@ vault login -no-print -tls-skip-verify -address=https://vault-enterprise.us-west
 ## Release Process
 Documentation: 
 
+
+
+Agregar OPENCV como librery externa
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+
+Solo agregand la libreria de opencv funciona: ![img_2.png](img_2.png)

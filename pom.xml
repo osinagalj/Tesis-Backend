@@ -216,11 +216,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-        <dependency>
-            <groupId>org.openpnp</groupId>
-            <artifactId>opencv</artifactId>
-            <version>3.4.2-0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.openpnp</groupId>-->
+<!--            <artifactId>opencv</artifactId>-->
+<!--            <version>3.4.9-0</version>-->
+<!--        </dependency>-->
 
         <!-- JavaFX Modules -->
         <dependency>
