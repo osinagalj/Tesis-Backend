@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
+import static com.unicen.core.model.User.PROFILE_PICTURE_DEFAULT_NAME;
 
 @Service
 public class UserService extends PublicObjectCrudService<User, UserRepository> {
@@ -36,11 +36,14 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     private final AccessRoleService accessRoleService;
     private final AuthenticationTokenService authenticationTokenService;
 
+
     /**
      * A secret that is generated once per app start and can be accessed only by the engineering team for doing admin-related
      * tasks like administering administrators
      */
     private String oneTimeAdminSecret;
+
+
 
     public UserService(UserRepository repository, UserPasswordEncoder encoder, ImageService imageService, @Lazy AccessRoleService accessRoleService, AuthenticationTokenService authenticationTokenService) {
         super(repository);
@@ -50,6 +53,7 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         this.authenticationTokenService = authenticationTokenService;
         this.oneTimeAdminSecret = generateOneTimeAdminSecret();
     }
+
 
 /*
     @Transactional
@@ -61,7 +65,6 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     @Transactional
     public Optional<User> findByExternalIdAndFetchImageEagerly(String userExternalId) throws IOException {
         return  repository.findByExternalIdAndFetchImageEagerly(userExternalId);   //new ArrayList<>();
-
     }
 
     @Override
@@ -76,12 +79,11 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
     }
 
     @Transactional
-    public void updatePictureOfUser(String userExternalId, MultipartFile file) throws IOException {
-        //TODO change this
-        Optional<User> maybeUser = repository.findByEmail("dev@gmail.com"); //repository.findByExternalId(userExternalId);
+    public void updatePictureOfUser(String userExternalId, String type, MultipartFile file) throws IOException {
+        Optional<User> maybeUser = repository.findByExternalId(userExternalId); //repository.findByEmail("dev@gmail.com");
         User user = maybeUser.orElseThrow( () -> new IllegalStateException("User not found"));
 
-        Image image = new Image("Image from test 2",1,11,"U","T","D",user, file.getBytes());
+        Image image = new Image(PROFILE_PICTURE_DEFAULT_NAME,1,11,"U",type,"D",user, file.getBytes(), user, new ArrayList<>());
         image.ensureExternalId();
         user.setImage(imageService.save(image));
         this.update(user.getId(), user);

@@ -1,6 +1,5 @@
 package com.unicen.core.services;
 
-import com.unicen.app.model.Image;
 import com.unicen.core.spring.lightweightcontainer.GlobalApplicationContext;
 import com.unicen.core.model.AccessRole;
 import com.unicen.core.model.User;

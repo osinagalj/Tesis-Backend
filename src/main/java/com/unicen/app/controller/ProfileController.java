@@ -1,13 +1,14 @@
 package com.unicen.app.controller;
 
-import com.unicen.app.dto.ImageDTO;
 import com.unicen.app.dto.ProfileDTO;
+import com.unicen.app.model.ImageType;
 import com.unicen.core.controller.GenericController;
 import com.unicen.core.dto.ApiResultDTO;
 import com.unicen.core.model.GenericSuccessResponse;
 import com.unicen.core.model.User;
 import com.unicen.core.security.GenericAuthenticationToken;
 import com.unicen.core.services.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/profile")
 @PreAuthorize("permitAll")
+@Api(tags = "6. Profile")
 /*@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")*/
 public class ProfileController extends GenericController<User, ProfileDTO> {
 
@@ -52,8 +54,8 @@ public class ProfileController extends GenericController<User, ProfileDTO> {
 
     @PostMapping("/upload-image")
     @ResponseBody
-    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage( @RequestParam("userExternalId") String userExternalId, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        service.updatePictureOfUser(userExternalId, multipartFile);
+    public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("userExternalId") String userExternalId, @RequestParam("type") String type, @RequestParam("file") MultipartFile multipartFile) throws IOException {
+        service.updatePictureOfUser(userExternalId, ImageType.getType(type), multipartFile);
         return ok();
     }
 

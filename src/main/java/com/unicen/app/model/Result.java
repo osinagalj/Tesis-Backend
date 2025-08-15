@@ -1,30 +1,38 @@
 package com.unicen.app.model;
 
 import com.unicen.core.model.AuditableModel;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-
+/**
+ * Represents a user in the platform
+ */
 @Entity
 @Getter
 @Setter
-@Table(name = "image")
-public class Result extends AuditableModel<Image> {
+@Table(name = "image_result")
+@AllArgsConstructor
+@NoArgsConstructor
+public class Result extends AuditableModel<Result> {
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "width")
-    private int width;
-    @Column(name = "height")
-    private int height;
-    @NonNull
-    @Column(name = "url")
-    private String url;
+    @Column(name = "algorithm")
+    private String algorithm;
+
+    @Column(name = "ratio")
+    private Integer ratio;
+
     @Column(name = "type")
     private String type;
-    @Column(name = "description")
-    private String description;
+
+    @Lob
+    @Column(name = "image_data", length = 1000)
+    private byte[] imageData;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "original_image_id")
+    private Image originalImageId;
+
 }

@@ -1,6 +1,5 @@
 package com.unicen.app.dto;
 
-import com.unicen.core.dto.UserModelDTO;
 import com.unicen.core.model.DtoAble;
 import com.unicen.core.model.User;
 import lombok.Getter;

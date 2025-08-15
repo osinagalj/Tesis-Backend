@@ -18,10 +18,10 @@ public class ApiResultDTO<T> {
     private static final String OPERATION_SUCCESSFUL = "Operation successful";
 
     @NonNull
-    private String message;
-    private Enum errorCode;
+    protected String message;
+    protected Enum errorCode;
     boolean success;
-    private T content;
+    protected T content;
 
     private ApiResultDTO(String message, T content) {
         this.errorCode = null;

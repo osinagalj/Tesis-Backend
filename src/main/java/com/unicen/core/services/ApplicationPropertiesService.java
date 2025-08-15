@@ -1,10 +1,7 @@
 package com.unicen.core.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ApplicationPropertiesService extends EnvironmentPropertiesService {

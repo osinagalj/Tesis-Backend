@@ -51,7 +51,7 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
     }
 
     @Transactional
-    private AuthenticationToken loginUsingPassword(String email, Function<User, Boolean> challenge) {
+    public AuthenticationToken loginUsingPassword(String email, Function<User, Boolean> challenge) {
         User user = userService.getByEmail(email, () -> {
             throw CoreApiException.authenticationFailed(false);
         });

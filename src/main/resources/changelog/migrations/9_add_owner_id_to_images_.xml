@@ -1,0 +1,20 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd 
+                      http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                      http://www.liquibase.org/xml/ns/pro             http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+  <property  name="table.name"  value="image" global="false"/>
+
+  <changeSet  author="Lautaro Osinaga"  id="9_create_${table.name}_table" >
+    <addColumn tableName="image">
+      <column  name="owner_id"     type="${type.id}">
+        <constraints nullable="true" foreignKeyName="FK_${table.name}_owner_id" referencedTableName="core_user" referencedColumnNames="id" />
+      </column>
+    </addColumn>
+
+  </changeSet>
+</databaseChangeLog>

@@ -34,6 +34,7 @@ public class AppBackendDevInitializer {
         logger.info("session token: " + tokenUser);
 
 
+
     }
 
     public static AuthenticationService getAuthenticationService() {

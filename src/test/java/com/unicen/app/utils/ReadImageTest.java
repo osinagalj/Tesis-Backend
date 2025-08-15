@@ -1,0 +1,455 @@
+package com.unicen.app.utils;
+
+import com.unicen.AppApplication;
+import org.junit.jupiter.api.Test;
+
+import javax.imageio.*;
+import javax.imageio.stream.FileImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Date;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.springframework.boot.SpringApplication;
+
+public class ReadImageTest {
+
+    public static long random = new Date().getTime();
+    public static String ORIGINAL_IMAGE = "/static/generated/01.jpg";
+
+    public static String RESULT_ORIGINAL_IMAGE = "/static/results/01/Lee_5.png";
+
+
+    public static String ORIGINAL_IMAGE_JPG_24_BITS = "/static/originals/09.jpg";
+
+    public static String DESTINATION_PATH = "src/test/resources/static/generated/new" + random + ".jpg";
+
+    public static String ORIGINAL_BMP_IMAGE = "/static/generated/new02.bmp";
+
+    public static String DESTINATION_BMP_PATH = "src/test/resources/static/generated/08_bmp" + random + ".bmp";
+
+    public static String ORIGINAL_PNG_IMAGE = "/static/originals/00lionPNG.png";
+
+    public static String DESTINATION_PNG_PATH = "src/test/resources/static/generated/lionPNG.png";
+
+
+    public static String DESTINATION_JPG_TO_BMP_PATH = "src/test/resources/static/generated/01_jpg_to_bmp" + random + ".bmp";
+    public static String READ_DESTINATION_JPG_TO_BMP_PATH = "/static/generated/01_jpg_to_bmp" + random + ".bmp";
+
+
+    static {
+        // Cargar la librería nativa de OpenCV
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
+
+
+    @Test
+    public void readMatImage() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        InputStream resultinputStream = getClass().getResourceAsStream(RESULT_ORIGINAL_IMAGE);
+
+        BufferedImage pngImage = ImageIO.read(inputStream);
+        BufferedImage result = ImageIO.read(resultinputStream);
+
+        var v = getPNSR(pngImage, result);
+        System.out.println("Value: " + v);
+
+    }
+
+
+    // Método para convertir BufferedImage a Mat
+    public static Mat bufferedImageToMat(BufferedImage bufferedImage) {
+        System.out.println("OPENCV" + org.opencv.core.Core.VERSION);
+
+        // Crear un objeto Mat de OpenCV
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
+        Mat mat = new Mat(height, width, CvType.CV_8UC3);
+
+        // Obtener los píxeles del BufferedImage y copiarlos a Mat
+        int[] data = new int[width * height];
+        bufferedImage.getRGB(0, 0, width, height, data, 0, width);
+
+        // Convertir el arreglo de datos a un arreglo de bytes en formato OpenCV
+        byte[] byteArray = new byte[3 * width * height];
+        for (int i = 0; i < data.length; i++) {
+            int pixel = data[i];
+            byteArray[3 * i] = (byte) ((pixel >> 16) & 0xFF);  // R
+            byteArray[3 * i + 1] = (byte) ((pixel >> 8) & 0xFF);   // G
+            byteArray[3 * i + 2] = (byte) (pixel & 0xFF);   // B
+        }
+
+        // Colocar los datos en el objeto Mat
+        mat.put(0, 0, byteArray);
+
+        return mat;
+    }
+
+    public static BufferedImage matToBufferedImage(Mat mat) {
+        // Si la imagen es en escala de grises, la convertimos a un BufferedImage de un solo canal
+        if (mat.channels() == 1) {
+            BufferedImage image = new BufferedImage(mat.width(), mat.height(), BufferedImage.TYPE_BYTE_GRAY);
+            byte[] data = new byte[mat.width() * mat.height()];
+            mat.get(0, 0, data);
+            image.getRaster().setDataElements(0, 0, mat.width(), mat.height(), data);
+            return image;
+        }
+
+        // Si la imagen es en color (BGR), la convertimos a un BufferedImage de tipo RGB
+        int width = mat.width();
+        int height = mat.height();
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+
+        // Obtener los datos de la Mat
+        byte[] data = new byte[width * height * (int)mat.elemSize()];
+        mat.get(0, 0, data);
+
+        // Colocar los datos de la Mat en la imagen
+        image.getRaster().setDataElements(0, 0, width, height, data);
+
+        return image;
+    }
+
+    // We need to use this file type bc it doens loss information when we manipulate teh data
+
+    public double getPNSR(BufferedImage original, BufferedImage result){
+        Mat I1 = bufferedImageToMat(original);
+        Mat I2 = bufferedImageToMat(result);
+
+        // Make sure images have the same size and type
+        if (I1.size().equals(I2.size()) && I1.type() == I2.type()) {
+
+            // Compute absolute difference between images
+            Mat s1 = new Mat();
+            Core.absdiff(I1, I2, s1);  // |I1 - I2|
+
+            s1.convertTo(s1, CvType.CV_32F);  // Convert to 32-bit float
+            s1 = s1.mul(s1);  // |I1 - I2|^2
+
+            // Sum all channels
+            Scalar s = Core.sumElems(s1);  // Sum of elements per channel
+
+            double sse = s.val[0] + s.val[1] + s.val[2];  // Sum of channels
+
+            // If sum of squared error (sse) is close to zero, return 0
+            if (sse <= 1e-10) {
+                return 0;
+            } else {
+                // Calculate MSE (Mean Squared Error)
+                double mse = sse / (double) (I1.channels() * I1.total());
+                // Calculate PSNR
+                double psnr = 10.0 * Math.log10((255 * 255) / mse);
+                return psnr;
+            }
+        } else {
+            throw new IllegalArgumentException("The images must have the same size and type.");
+        }
+    }
+
+    //This tests reduce the size of the image using ImageIO
+    // We need to use this file type bc it doens loss information when we manipulate teh data
+    @Test
+    public void convertJPGtOBMP() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        BufferedImage pngImage = ImageIO.read(inputStream);
+       var type =  pngImage.getType();
+
+        // Crear una nueva imagen en formato BMP
+        BufferedImage bmpImage = new BufferedImage(
+                pngImage.getWidth(),
+                pngImage.getHeight(),
+                pngImage.getType());//TODO BufferedImage.TYPE_BYTE_GRAY //for 8 bits
+                                            // BufferedImage.TYPE_INT_RGB for png
+
+
+        // Copiar los píxeles de la imagen PNG a la imagen BMP
+        bmpImage.createGraphics().drawImage(pngImage, 0, 0, null);
+
+        //writeImage(bmpImage, 1.0f, "bmp"); TODO this write the image but with more size
+
+        // Escribir la imagen BMP en un archivo
+        ImageIO.write(bmpImage, "static/bmp", new File(DESTINATION_JPG_TO_BMP_PATH));
+    }
+
+    //This tests read an bmp image, convert it to array2 and then to bmp image without lossing information
+
+    @Test
+    public void readImageButWithOtherSizeBMPWith2dprocess() throws Exception {
+
+        try {
+            InputStream is = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
+            var array2d = convertBMPToArray(is);
+            writeArrayToBMP(array2d, DESTINATION_BMP_PATH);
+            //ImageIO.write(bf, "bmp", new File(DESTINATION_BMP_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+    public static void writeArrayToBMP(int[][] pixelArray, String filePath) throws IOException {
+        int width = pixelArray.length;
+        int height = pixelArray[0].length;
+
+        // Crear un BufferedImage con las dimensiones correspondientes
+        BufferedImage bmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        // Asignar los valores de píxeles del array 2D al BufferedImage
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixelValue = pixelArray[x][y];
+                // Convertir el valor de píxel de escala de grises a RGB (en este caso, asignamos el mismo valor a los tres canales)
+                int rgb = (pixelValue << 16) | (pixelValue << 8) | pixelValue;
+                bmpImage.setRGB(x, y, rgb);
+            }
+        }
+
+        // Escribir el BufferedImage en un archivo de imagen BMP
+        File bmpFile = new File(filePath);
+        ImageIO.write(bmpImage, "static/bmp", bmpFile);
+
+        System.out.println("Imagen BMP escrita correctamente en: " + filePath);
+    }
+
+    public static int[][] convertBMPToArray(InputStream file) throws IOException {
+        BufferedImage bmpImage = ImageIO.read(file);
+
+        int width = bmpImage.getWidth();
+        int height = bmpImage.getHeight();
+
+        int[][] pixelArray = new int[width][height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                // Get the RGB value of the pixel at (x, y)
+                int rgb = bmpImage.getRGB(x, y);
+                // Convert RGB to grayscale by averaging the color channels
+                int gray = (int) ((0.3 * ((rgb >> 16) & 0xFF)) + (0.59 * ((rgb >> 8) & 0xFF)) + (0.11 * (rgb & 0xFF)));
+                // Store the grayscale value in the pixel array
+                pixelArray[x][y] = gray;
+            }
+        }
+
+        return pixelArray;
+    }
+
+    //It works fine for the bmp image
+    @Test
+    public void readImageButWithOtherSizeBMP() throws Exception {
+        try {
+            InputStream is = getClass().getResourceAsStream(ORIGINAL_BMP_IMAGE);
+            BufferedImage bf = ImageIO.read(is);
+            ImageIO.write(bf, "static/bmp", new File(DESTINATION_BMP_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+
+
+
+
+
+
+
+    @Test
+    public void execute() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        inputStream.close();
+        try {
+
+            InputStream is = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+            BufferedImage bf = ImageIO.read(is);
+            ImageIO.write(bf, "jpg", new File(DESTINATION_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+
+    }
+
+
+    BufferedImage createResizedCopy(Image originalImage, int scaledWidth, int scaledHeight, boolean preserveAlpha) {
+        int imageType = preserveAlpha ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        BufferedImage scaledBI = new BufferedImage(scaledWidth, scaledHeight, imageType);
+        Graphics2D g = scaledBI.createGraphics();
+        if (preserveAlpha) {
+            g.setComposite(AlphaComposite.Src);
+        }
+        g.drawImage(originalImage, 0, 0, scaledWidth, scaledHeight, null);
+        g.dispose();
+        return scaledBI;
+    }
+
+
+    // Convertir la imagen a escala de grises y obtener los valores de los píxeles
+    public int[][] convertirAGrisesYObtenerArray(BufferedImage imagen) {
+        int ancho = imagen.getWidth();
+        int alto = imagen.getHeight();
+        int[][] array2D = new int[alto][ancho];
+
+        for (int y = 0; y < alto; y++) {
+            for (int x = 0; x < ancho; x++) {
+                int color = imagen.getRGB(x, y);
+                int r = (color >> 16) & 0xFF;
+                int g = (color >> 8) & 0xFF;
+                int b = color & 0xFF;
+                int gris = (r + g + b) / 3;
+                array2D[y][x] = gris;
+            }
+        }
+        return array2D;
+    }
+
+    // Guardar la imagen a partir de una matriz de píxeles en escala de grises
+    public void saveImageFromArray(int[][] array2D, int ancho, int alto, String nombreArchivo) throws IOException {
+        BufferedImage imagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int y = 0; y < alto; y++) {
+            for (int x = 0; x < ancho; x++) {
+                int valor = array2D[y][x];
+                int rgb = (valor << 16) | (valor << 8) | valor;
+                imagen.setRGB(x, y, rgb);
+            }
+        }
+
+        // Guardar la imagen en un archivo
+        File outputFile = new File(nombreArchivo);
+        ImageIO.write(imagen, "jpg", outputFile);
+    }
+
+    // Método para convertir una matriz de enteros a un InputStream
+    public InputStream convertIntArrayToImage(int[][] pixelArray) throws IOException {
+        int ancho = pixelArray[0].length;
+        int alto = pixelArray.length;
+        byte[] byteArray = serializeIntArray(pixelArray);
+
+        // Paso 2: Crea un InputStream a partir del array de bytes
+        InputStream inputStream = new ByteArrayInputStream(byteArray);
+        return inputStream;
+    }
+
+    // Método para serializar una matriz de enteros en un array de bytes
+    private static byte[] serializeIntArray(int[][] intArray) throws IOException {
+        ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+        objectOutputStream.writeObject(intArray);
+        objectOutputStream.close();
+        return byteOutputStream.toByteArray();
+    }
+
+
+    //This tests reduce the size of the image using ImageIO
+    @Test
+    public void readImageButWithOtherSizeJPG() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        inputStream.close();
+        try {
+            InputStream is = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+            BufferedImage bf = ImageIO.read(is);
+            ImageIO.write(bf, "jpg", new File(DESTINATION_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+
+
+    //It works fine for the bmp image
+    @Test
+    public void readImageButWithOtherSizePNG() throws Exception {
+        try {
+            InputStream is = getClass().getResourceAsStream(ORIGINAL_PNG_IMAGE);
+            BufferedImage bf = ImageIO.read(is);
+            ImageIO.write(bf, "png", new File(DESTINATION_PNG_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+
+
+    @Test
+    public void resizeUsingJavaAlgo() throws IOException {
+        InputStream is = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+
+        File dest = new File(DESTINATION_PATH);
+
+        BufferedImage sourceImage = ImageIO.read(is);
+        Graphics2D g2d = sourceImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR );
+        g2d.drawImage(sourceImage, 0, 0, sourceImage.getWidth(null), sourceImage.getHeight(null), null);
+        dest.createNewFile();
+        writeImage(sourceImage, 1.0f, "jpg", DESTINATION_PATH);
+    }
+
+
+    /**
+     * Write a JPEG file setting the compression quality.
+     *
+     * @param image a BufferedImage to be saved
+     * @param quality a float between 0 and 1, where 1 means uncompressed.
+     * @throws IOException in case of problems writing the file
+     */
+    private static void writeImage(BufferedImage image, float quality, String format, String fileDest)
+            throws IOException {
+        ImageWriter writer = null;
+        FileImageOutputStream output = null;
+        try {
+            writer = ImageIO.getImageWritersByFormatName(format).next();
+            ImageWriteParam param = writer.getDefaultWriteParam();
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(quality); //TODO only for png?
+
+            output = new FileImageOutputStream(new File(fileDest));
+            writer.setOutput(output);
+            IIOImage iioImage = new IIOImage(image, null, null);
+            writer.write(null, iioImage, param);
+        } catch (IOException ex) {
+            throw ex;
+        } finally {
+            if (writer != null) {
+                writer.dispose();
+            }
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+
+
+    //It works fine for the bmp image
+    @Test
+    public void readImageButWithOtherSizeBMPWith2d() throws Exception {
+        try {
+            InputStream is = getClass().getResourceAsStream("/static/generated/08_bmpTest.bmp");
+            BufferedImage bf = ImageIO.read(is);
+            ImageIO.write(bf, "static/bmp", new File(DESTINATION_BMP_PATH));
+        } catch (IOException e) {
+            System.out.println("Error");
+        }
+    }
+
+
+
+
+    //This test read the input correctly and save the image with the same size and quality
+    @Test
+    public void readImageToInputSteamAndSaveItWithSameSize() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream(ORIGINAL_IMAGE);
+        try (FileOutputStream out = new FileOutputStream(new File(DESTINATION_PATH))) {
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, len);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+
+}
