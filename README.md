@@ -47,3 +47,88 @@ Agregar OPENCV como librery externa
 
 
 Solo agregand la libreria de opencv funciona: ![img_2.png](img_2.png)
+
+
+Cómo compilar OpenCV 3.4.9 en macOS con Java (generar .dylib)
+Paso 1: Instalá herramientas básicas
+
+Abre Terminal y ejecuta:
+
+brew install cmake ant
+
+cmake para compilar OpenCV.
+
+ant para compilar el código Java.
+
+Paso 2: Descargá el código fuente de OpenCV y opencv_contrib (opcional)
+cd ~
+git clone https://github.com/opencv/opencv.git
+cd opencv
+git checkout 4.8.1
+
+Si querés módulos extra (recomendado):
+
+cd ~
+git clone https://github.com/opencv/opencv_contrib.git
+cd opencv_contrib
+git checkout 4.8.1
+
+Paso 3: Crear carpeta build y configurar cmake para Java
+cd ~/opencv
+mkdir build
+cd build
+
+Ejecuta:
+echo $JAVA_HOME
+para obtener la ruta de JAVA_HOME
+
+cmake -G "Unix Makefiles" \
+-D CMAKE_BUILD_TYPE=Release \
+-D CMAKE_INSTALL_PREFIX=/usr/local \
+-D CMAKE_POLICY_VERSION_MINIMUM=3.5 \
+-D BUILD_opencv_java=ON \
+-D JAVA_HOME=/Users/lautaroosinaga/Library/Java/JavaVirtualMachines/corretto-11.0.28/Contents/Home \
+..
+
+succes smessage:
+-- Configuring done (22.6s)
+-- Generating done (0.6s)
+-- Build files have been written to: /Users/lautaroosinaga/opencv/build
+
+
+Si no descargaste opencv_contrib, sacá la línea:
+
+-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules
+
+Paso 4: Compilar OpenCV
+make -j$(sysctl -n hw.logicalcpu)
+
+Esto tarda varios minutos.
+
+Paso 5: Instalar
+sudo make install
+
+Paso 6: Ubicar archivos generados
+
+.jar Java: ~/opencv/build/bin/opencv-349.jar
+
+.dylib nativa: ~/opencv/build/lib/libopencv_java349.dylib
+
+Paso 7: Usar OpenCV en Java
+
+En tu proyecto, agrega el .jar como dependencia (en IntelliJ o tu build system).
+
+Ejecuta tu app Java agregando este parámetro para encontrar la librería nativa:
+
+-Djava.library.path=/Users/tu_usuario/opencv/build/lib
+
+En tu código Java, poné:
+
+static {
+System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+}
+
+Ejemplo completo para correr desde consola:
+java -Djava.library.path=/Users/tu_usuario/opencv/build/lib \
+-cp .:/Users/tu_usuario/opencv/build/bin/opencv-349.jar \
+tu.paquete.Main
