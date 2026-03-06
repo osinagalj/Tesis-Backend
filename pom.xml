@@ -215,12 +215,13 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
-<!--        <dependency>-->
-<!--            <groupId>org.openpnp</groupId>-->
-<!--            <artifactId>opencv</artifactId>-->
-<!--            <version>3.4.9-0</version>-->
-<!--        </dependency>-->
+        <!-- Source: https://mvnrepository.com/artifact/org.openpnp/opencv -->
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.8.1-0</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- JavaFX Modules -->
         <dependency>
