@@ -1,10 +1,30 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:alpine
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
       POSTGRES_DB: blog
+      TZ: America/Argentina/Buenos_Aires
+      PGTZ: America/Argentina/Buenos_Aires
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/blog
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      TZ: America/Argentina/Buenos_Aires
+      JAVA_TOOL_OPTIONS: -Duser.timezone=America/Argentina/Buenos_Aires
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
