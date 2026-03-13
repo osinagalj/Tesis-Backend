@@ -1,7 +1,5 @@
 package com.unicen.app.algorithms;
 
-import com.unicen.CapturedImage;
-
 public class NewLeeRobustFilter extends AlgorithmFilter{
 
     public static CapturedImage execute(CapturedImage item, int radius) {
@@ -73,9 +71,13 @@ public class NewLeeRobustFilter extends AlgorithmFilter{
                         localHistogram[row][item.getValueImage(row + i, col + radius + 1)]++;
                 }
 
-                y = median + interQLocal / interQGlobal * (item.getValueImage(row, col) - median);
-
-                aux.setValueImage(row, col, (int) y);
+                if (interQGlobal + interQLocal == 0) {
+                    aux.setValueImage(row, col, median);
+                } else {
+                    double k = interQLocal / (interQGlobal + interQLocal);
+                    y = median + k * (item.getValueImage(row, col) - median);
+                    aux.setValueImage(row, col, (int) Math.round(y));
+                }
             }
         }
 

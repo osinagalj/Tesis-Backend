@@ -1,15 +1,12 @@
 package com.unicen.app.service;
 
-import com.unicen.CapturedImage;
-import com.unicen.app.model.Image;
+import com.unicen.app.algorithms.CapturedImage;
 import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class Metrics {
 

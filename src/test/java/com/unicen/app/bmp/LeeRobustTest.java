@@ -1,16 +1,8 @@
 package com.unicen.app.bmp;
 
-import com.unicen.CapturedImage;
-import com.unicen.app.algorithms.LeeFilter;
-import com.unicen.app.algorithms.LeeRobustFilter;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 
 public class LeeRobustTest {

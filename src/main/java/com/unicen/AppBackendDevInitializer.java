@@ -33,7 +33,21 @@ public class AppBackendDevInitializer {
         String tokenUser = getAuthenticationService().loginUsingPassword(userUser.getEmail(), "password").getToken();
         logger.info("session token: " + tokenUser);
 
-
+        String[][] mockUsers = {
+            {"Alice", "Smith",   "alice.smith@gmail.com"},
+            {"Bob",   "Jones",   "bob.jones@gmail.com"},
+            {"Carol", "White",   "carol.white@gmail.com"},
+            {"David", "Brown",   "david.brown@gmail.com"},
+            {"Eve",   "Taylor",  "eve.taylor@gmail.com"},
+            {"Frank", "Martin",  "frank.martin@gmail.com"},
+            {"Grace", "Wilson",  "grace.wilson@gmail.com"},
+            {"Hank",  "Moore",   "hank.moore@gmail.com"},
+            {"Ivy",   "Jackson", "ivy.jackson@gmail.com"},
+            {"Jack",  "Lee",     "jack.lee@gmail.com"},
+        };
+        for (String[] u : mockUsers) {
+            EntitiesDrawer.newUser(u[0], u[1], u[2], EntitiesDrawer.DEFAULT_PASSWORD);
+        }
 
     }
 

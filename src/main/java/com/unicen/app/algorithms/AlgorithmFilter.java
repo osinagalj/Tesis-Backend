@@ -1,6 +1,5 @@
 package com.unicen.app.algorithms;
 
-import com.unicen.CapturedImage;
 import com.unicen.app.model.Algorithm;
 
 public abstract class AlgorithmFilter {

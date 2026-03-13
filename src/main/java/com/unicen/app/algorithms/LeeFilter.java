@@ -1,7 +1,5 @@
 package com.unicen.app.algorithms;
 
-import com.unicen.CapturedImage;
-
 import javax.imageio.ImageIO;
 
 import java.awt.image.BufferedImage;

@@ -13,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.unicen.Utils.closeInputStream;
-import static com.unicen.Utils.compararInputStreams;
+import static com.unicen.core.utils.Utils.closeInputStream;
+import static com.unicen.core.utils.Utils.compararInputStreams;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

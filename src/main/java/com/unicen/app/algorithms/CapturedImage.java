@@ -1,4 +1,4 @@
-package com.unicen;
+package com.unicen.app.algorithms;
 
 import lombok.Getter;
 import lombok.Setter;

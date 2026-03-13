@@ -1,7 +1,5 @@
 package com.unicen.app.algorithms;
 
-import com.unicen.CapturedImage;
-
 public class MedianFilterHuang extends AlgorithmFilter{
 
     public static CapturedImage execute(CapturedImage item, double k, int dist) {

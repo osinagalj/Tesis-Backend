@@ -12,7 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.unicen.core.model.User.PROFILE_PICTURE_DEFAULT_NAME;
@@ -64,6 +70,33 @@ public class ImageService extends PublicObjectCrudService<Image, ImageRepository
         return imagePage;
     }
 
+
+    public long countWithResults() {
+        return repository.countImagesWithResults();
+    }
+
+    public long countByType(List<String> types) {
+        return repository.countByType(types);
+    }
+
+    public List<Long> countImagesLastDays(int days) {
+        LocalDateTime startDate = LocalDate.now().minusDays(days - 1).atStartOfDay();
+        List<Object[]> rawCounts = repository.countByDaySince(startDate);
+
+        Map<LocalDate, Long> countByDate = new HashMap<>();
+        for (Object[] row : rawCounts) {
+            LocalDate date = ((java.sql.Date) row[0]).toLocalDate();
+            Long count = ((Number) row[1]).longValue();
+            countByDate.put(date, count);
+        }
+
+        List<Long> result = new ArrayList<>();
+        for (int i = days - 1; i >= 0; i--) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            result.add(countByDate.getOrDefault(date, 0L));
+        }
+        return result;
+    }
 
     @Transactional
     public Optional<Image> findByExternalIdAndFetchImageEagerly(String externalId) throws IOException {

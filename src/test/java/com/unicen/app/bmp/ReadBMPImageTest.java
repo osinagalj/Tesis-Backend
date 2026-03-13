@@ -1,7 +1,7 @@
 package com.unicen.app.bmp;
 
 
-import com.unicen.CapturedImage;
+import com.unicen.app.algorithms.CapturedImage;
 import com.unicen.app.algorithms.LeeFilter;
 import org.junit.jupiter.api.Test;
 import javax.imageio.*;

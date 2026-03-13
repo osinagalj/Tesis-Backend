@@ -44,11 +44,11 @@ vault login -no-print -tls-skip-verify -address=https://vault-enterprise.us-west
 Documentation:
 
 Agregar OPENCV como librery externa
-![img.png](img.png)
+![img.png](docs/img.png)
 
-![img_1.png](img_1.png)
+![img_1.png](docs/img_1.png)
 
-Solo agregand la libreria de opencv funciona: ![img_2.png](img_2.png)
+Solo agregand la libreria de opencv funciona: ![img_2.png](docs/img_2.png)
 
 Cómo compilar OpenCV 3.4.9 en macOS con Java (generar .dylib)
 Paso 1: Instalá herramientas básicas
@@ -126,7 +126,7 @@ static {
 System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 }
 
-Solo agregand la libreria de opencv funciona: ![img_2.png](img_2.png)
+Solo agregand la libreria de opencv funciona: ![img_2.png](docs/img_2.png)
 
 
 Cómo compilar OpenCV 3.4.9 en macOS con Java (generar .dylib)
@@ -209,8 +209,8 @@ System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 }
 
 Ejemplo completo para correr desde consola:
-java -Djava.library.path=/Users/tu_usuario/opencv/build/lib \
--cp .:/Users/tu_usuario/opencv/build/bin/opencv-349.jar \
+java -Djava.library.path=/Users/lautaroosinaga/opencv/build/lib \
+-cp .:/Users/lautaroosinaga/opencv/build/bin/opencv-349.jar \
 tu.paquete.Main
 Ejemplo completo para correr desde consola:
 java -Djava.library.path=/Users/tu_usuario/opencv/build/lib \

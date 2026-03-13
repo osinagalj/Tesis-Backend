@@ -13,9 +13,10 @@ public class AppApplication {
     private GlobalApplicationContext globalApplicationContext; // to force Spring instantiation
 
     static {
-        String path = System.getProperty("user.dir") + "/opencv/libopencv_java481.dylib";
-        System.load(path);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
+
+//    TODO this needs to be to run the opencv library
     public static void main(String[] args) {
         System.out.println("OPENCV" + org.opencv.core.Core.VERSION);
         SpringApplication.run(AppApplication.class, args);

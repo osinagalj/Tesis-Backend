@@ -31,10 +31,10 @@ public class Indicator extends AuditableModel<Indicator> {
     @Column(name = "lee")
     private Float lee;
 
-    @Column(name = "leeR")
+    @Column(name = "leer")
     private Float leeR;
 
-    @Column(name = "newLeeR")
+    @Column(name = "newleer")
     private Float newLeeR;
 
     @OneToOne(mappedBy = "ENL", fetch = FetchType.LAZY)

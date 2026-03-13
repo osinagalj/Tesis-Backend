@@ -1,4 +1,4 @@
-package com.unicen;
+package com.unicen.core.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

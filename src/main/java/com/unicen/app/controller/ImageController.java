@@ -84,13 +84,8 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     @GetMapping("/getimage")
     @ResponseBody
     public ResponseEntity<Resource> getImageDynamicType(@RequestParam("userExternalId") String userExternalId) throws IOException {
-        //working
         MediaType contentType = MediaType.IMAGE_JPEG;
-        InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
-
         var user = userService.findByExternalIdAndFetchImageEagerly(userExternalId);
-        // var a = service.findAll().stream().findFirst();
-
         if (user.isPresent()) {
             if (user.get().getImage() != null) {
                 InputStream is = new ByteArrayInputStream(user.get().getImage().getImageData());
@@ -102,7 +97,7 @@ public class ImageController extends GenericController<Image, ImageDTO> {
                 throw CoreApiException.objectNotFound("Picture for user: " + user.get().getEmail() + "hasn't been set");
             }
         } else {
-            throw CoreApiException.objectNotFound("User: " + user.get().getEmail() + "not exists");
+            throw CoreApiException.objectNotFound("User not found: " + userExternalId);
         }
     }
 
@@ -113,7 +108,7 @@ public class ImageController extends GenericController<Image, ImageDTO> {
         if (user.isPresent()) {
             return pageResult(service.findPageImages(page, pageSize, user.get(), Sort.Direction.DESC, "createdAt"));
         } else {
-            throw CoreApiException.objectNotFound("User: " + user.get().getEmail() + "not exists");
+            throw CoreApiException.objectNotFound("User not found: " + userExternalId);
         }
     }
 
@@ -123,10 +118,7 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     public ResponseEntity<Resource> getImageResource(@RequestParam("externalId") String externalId) throws IOException {
         //working
         MediaType contentType = MediaType.IMAGE_JPEG;
-        InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
-
         var image = service.findByExternalIdAndFetchImageEagerly(externalId);
-        // var a = service.findAll().stream().findFirst();
         if (!image.isPresent()) {
             throw CoreApiException.objectNotFound("Resource : " + externalId + " not exists");
 
@@ -141,14 +133,12 @@ public class ImageController extends GenericController<Image, ImageDTO> {
     @PostMapping("/upload-image")
     @ResponseBody
     public ResponseEntity<ApiResultDTO<GenericSuccessResponse>> uploadImage(@RequestParam("userExternalId") String userExternalId, @RequestParam("type") String type, @RequestParam("file") MultipartFile multipartFile) throws IOException {
-        //TODO change this
-        Optional<User> user = userService.findByExternalId(userExternalId); //repository.findByExternalId(userExternalId);
-        var a = ImageType.getType(type);
+        Optional<User> user = userService.findByExternalId(userExternalId);
         if (user.isPresent()) {
             service.saveImage(user.get(), ImageType.getType(type), multipartFile);
-            return null;
+            return ok();
         }
-        return ok();
+        throw CoreApiException.objectNotFound("User not found: " + userExternalId);
     }
 
 }

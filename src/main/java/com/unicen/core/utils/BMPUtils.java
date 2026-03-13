@@ -1,4 +1,4 @@
-package com.unicen;
+package com.unicen.core.utils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -47,25 +47,25 @@ public class BMPUtils {
 
         BufferedImage image = ImageIO.read(imageStream);
         var formats= ImageIO.getReaderFormatNames();
-        // Obtener la anchura y altura de la imagen
+        // Get the width and height of the image
         int width = image.getWidth();
         int height = image.getHeight();
 
-        // Iterar a través de los píxeles y establecer la mitad de la imagen como negra
+        // Iterate through the pixels and set the right half of the image to the given color
         for (int y = 0; y < height; y++) {
             for (int x = width / 2; x < width; x++) {
                 image.setRGB(x, y, color.getRGB());
             }
         }
 
-        // Guardar la imagen modificada
-        // Aquí puedes especificar la ruta y el formato de salida de la imagen modificada
+        // Save the modified image
+        // You can specify the output path and format here
 
         String desktopPath = System.getProperty("user.home") + "\\Desktop\\";
         String filePath = desktopPath + "test" + Math.random() + ".png";
 
 
-        // Crear un ByteArrayOutputStream para almacenar los bytes de la imagen
+        // Create a ByteArrayOutputStream to store the image bytes
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         //ImageIO.write(image, "png", new File(filePath));

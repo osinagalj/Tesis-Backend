@@ -72,10 +72,7 @@ public class ResultController extends GenericController<Result, ImageResultDTO> 
     public ResponseEntity<Resource> getImageResource(@RequestParam("externalId") String externalId) throws IOException {
         //working
         MediaType contentType = MediaType.IMAGE_JPEG;
-        InputStream in = getClass().getResourceAsStream("/static/messi.jpg");
-
         var image =  service.findByExternalIdAndFetchImageEagerly(externalId);
-
         if(!image.isPresent()){
             throw CoreApiException.objectNotFound("Resource : " + externalId + " not exists");
 

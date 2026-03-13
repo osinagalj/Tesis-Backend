@@ -116,7 +116,9 @@ public class UserService extends PublicObjectCrudService<User, UserRepository> {
         if (plainPassword == null) {
             throw CoreApiException.validationError("Password not provided");
         }
-        return repository.save(new User(firstName, lastName, email, userPasswordEncoder.encode(plainPassword)));
+        User user = new User(firstName, lastName, email, userPasswordEncoder.encode(plainPassword));
+        user.getRoles().add(accessRoleService.ensure("ROLE_USER"));
+        return repository.save(user);
     }
 
     @Transactional

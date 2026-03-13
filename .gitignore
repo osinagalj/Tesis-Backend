@@ -4,7 +4,7 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 
-.idea
+.idea/
 target
 target/
 

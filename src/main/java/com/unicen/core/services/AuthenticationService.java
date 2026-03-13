@@ -118,9 +118,16 @@ public class AuthenticationService extends CrudService<AuthenticationToken, Auth
         return code;
     }
 
+    @Transactional
     public void forgotPassword(String email) {
         User registeredUser = userService.getByEmail(email);
-
+        ValidationCode code = validationCodeService.createForEmailValidation(registeredUser);
+        String link = properties.getValidationForgotPassword()
+                + "?code=" + code.getCode()
+                + "&email=" + URLEncoder.encode(registeredUser.getEmail(), StandardCharsets.UTF_8);
+        String template = properties.getValidationForgotPasswordTemplate()
+                .replace("${link}", link);
+        emailService.sendEmail(properties.getFromEmail(), registeredUser.getEmail(), "Reset your password", new HashMap<>(), template);
     }
 
     public AuthenticationToken renewToken(User user) {
