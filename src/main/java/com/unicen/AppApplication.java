@@ -1,7 +1,7 @@
 package com.unicen;
 
 import com.unicen.core.spring.lightweightcontainer.GlobalApplicationContext;
-import org.opencv.core.Core;
+import nu.pattern.OpenCV;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,8 +13,8 @@ public class AppApplication {
     private GlobalApplicationContext globalApplicationContext; // to force Spring instantiation
 
     static {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-    }
+        OpenCV.loadLocally();
+        }
 
 //    TODO this needs to be to run the opencv library
     public static void main(String[] args) {
