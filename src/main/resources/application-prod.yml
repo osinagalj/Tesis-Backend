@@ -6,7 +6,11 @@ application:
     base-url: 'https://tesis-frontend-material-kit.vercel.app'
   validation-base-url: '${application.front.base-url}/auth/validate'
 
-
+PROD_DB_HOST: turntable.proxy.rlwy.net
+PROD_DB_PORT: 22216
+PROD_DB_NAME: railway
+PROD_DB_PASSWORD: aDfSdGgsPXuGSHVUAHOfCRGmODjQATCm
+PROD_DB_USERNAME: postgres
 
 spring:
   datasource:
