@@ -15,9 +15,9 @@ PROD_DB_USERNAME: postgres
 
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${PROD_DB_USERNAME}
-    password: ${PROD_DB_PASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://${PROD_DB_HOST:turntable.proxy.rlwy.net}:${PROD_DB_PORT:22216}/${PROD_DB_NAME:postgres}}
+    username: ${PROD_DB_USERNAME:postgres}
+    password: ${PROD_DB_PASSWORD:aDfSdGgsPXuGSHVUAHOfCRGmODjQATCm}
     name: spring-blog
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
