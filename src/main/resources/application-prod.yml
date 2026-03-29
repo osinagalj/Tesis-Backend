@@ -4,7 +4,7 @@ server:
 application:
   base-url: 'https://tesis-backend-production.up.railway.app'
   front:
-    base-url: 'https://tesis-frontend-material-kit.vercel.app'
+    base-url: 'https://tesis-frontend-material-pg8yo2tr1-osinagalj-8375s-projects.vercel.app/'
   validation-base-url: '${application.front.base-url}/auth/validate'
 
 PROD_DB_HOST: turntable.proxy.rlwy.net
