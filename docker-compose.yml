@@ -17,14 +17,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/blog
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: prod
       TZ: America/Argentina/Buenos_Aires
       JAVA_TOOL_OPTIONS: -Duser.timezone=America/Argentina/Buenos_Aires
-    depends_on:
-      - db
 
 volumes:
   postgres_data:
