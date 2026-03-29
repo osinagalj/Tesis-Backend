@@ -12,9 +12,9 @@ public class AppApplication {
     @Autowired
     private GlobalApplicationContext globalApplicationContext; // to force Spring instantiation
 
-//    static {
-//        OpenCV.loadLocally();
-//        }
+    static {
+        OpenCV.loadLocally();
+        }
 
 //    TODO this needs to be to run the opencv library
     public static void main(String[] args) {
