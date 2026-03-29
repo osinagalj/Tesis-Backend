@@ -1,5 +1,6 @@
 server:
   port: ${PORT:8080}
+  address: 0.0.0.0
 application:
   base-url: 'https://tesis-backend-production.up.railway.app'
   front:
@@ -14,7 +15,7 @@ PROD_DB_USERNAME: postgres
 
 spring:
   datasource:
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    url: ${DATABASE_URL}
     username: ${PROD_DB_USERNAME}
     password: ${PROD_DB_PASSWORD}
     name: spring-blog
